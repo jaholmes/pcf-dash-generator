@@ -1,0 +1,6 @@
+/generated/
+/__pycache__/
+.project
+.pydevproject
+generated/*
+.DS_Store
