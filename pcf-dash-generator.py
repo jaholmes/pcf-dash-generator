@@ -4,6 +4,7 @@ from flask import Flask, jsonify
 from string import Template
 import argparse
 import requests
+import re
 
 pcf_dash_template_file = 'templates/pcf_dashboard_template_v1.json'
 pcf_dash_generated_file = 'generated/pcf_dashboard_generated.json'
@@ -25,6 +26,24 @@ def parse_args():
         print(args)
     return args
     
+def populate_resource_details(args):
+    metric_path_root = 'Application Infrastructure Performance|' + args.tier + '|Custom Metrics|CF'
+    query_prams='?output=json&metric-path=' + metric_path_root
+    url = args.controller_url + '/controller/rest/applications/' + args.app + '/metrics' + query_prams
+    if args.verbose: print('url: ' + url)    
+    response = requests.get(url, auth=(args.user_name, args.user_pass))
+    response.raise_for_status();
+    print(response.json()) 
+    folders = response.json()
+    print('folders: ' + str(folders))
+
+    for folder in folders:
+        print('name: ' + str(folder['name']))
+        match = re.match(r'cf.*', str(folder), re.I)
+        print('match: ' + str(match))
+        #    print('name: ' + str(folder['name']))
+
+    
 def populate_service_details(args):
     metric_path_root = 'Application Infrastructure Performance|' + args.tier + '|Custom Metrics|CF|cf'    
     query_prams='?output=json&metric-path=' + metric_path_root
@@ -34,7 +53,7 @@ def populate_service_details(args):
     response.raise_for_status();
     print(response.json()) 
     pcf_service_list = response.json()
-
+    
     pcf_services = {}
     for pcf_service in pcf_service_list:
         service_name = pcf_service['name']
@@ -91,11 +110,12 @@ def publish():
     
 def run():
     args = parse_args()
-    pcf_services = populate_service_details(args)
-    print('pcf_services: ' + str(pcf_services))
-    generated = generate_dashboard(pcf_services, args.app, args.tier)
-    with open(pcf_dash_generated_file, 'w', encoding='utf-8') as myfile:
-        myfile.write(generated)
+    #pcf_services = populate_service_details(args)
+    populate_resource_details(args)
+    #print('pcf_services: ' + str(pcf_services))
+    #generated = generate_dashboard(pcf_services, args.app, args.tier)
+    #with open(pcf_dash_generated_file, 'w', encoding='utf-8') as myfile:
+    #    myfile.write(generated)
     
 if __name__ == '__main__':
     run()
