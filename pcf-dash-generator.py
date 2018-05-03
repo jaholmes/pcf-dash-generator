@@ -26,7 +26,7 @@ def parse_args():
         print(args)
     return args
     
-def populate_resource_details(args):
+def get_resources_parent_path(args):
     metric_path_root = 'Application Infrastructure Performance|' + args.tier + '|Custom Metrics|CF'
     query_prams='?output=json&metric-path=' + metric_path_root
     url = args.controller_url + '/controller/rest/applications/' + args.app + '/metrics' + query_prams
@@ -37,14 +37,20 @@ def populate_resource_details(args):
     folders = response.json()
     print('folders: ' + str(folders))
 
+    resource_parent_path = None
     for folder in folders:
-        print('name: ' + str(folder['name']))
-        match = re.match(r'cf.*', str(folder), re.I)
-        print('match: ' + str(match))
-        #    print('name: ' + str(folder['name']))
-
+        #todo need to filter out other cf- matches like cf-redis, but wait for new version of tile
+        #to confirm this is necessary (bosh/resource metric location may change)
+        if re.match('cf-\w+', str(folder['name']), re.I) and 'redis' not in str(folder['name']):
+            print('name: ' + str(folder['name']))
+            resource_parent_path = str(folder['name'])
+    if resource_parent_path is None: 
+        raise RuntimeError("unable to locate resource metrics parent folder using url: " + url)
+    return resource_parent_path
     
-def populate_service_details(args):
+    
+    
+def get_pcf_services(args):
     metric_path_root = 'Application Infrastructure Performance|' + args.tier + '|Custom Metrics|CF|cf'    
     query_prams='?output=json&metric-path=' + metric_path_root
     url = args.controller_url + '/controller/rest/applications/' + args.app + '/metrics' + query_prams
@@ -85,7 +91,7 @@ def populate_service_details(args):
 
     return pcf_services
 
-def generate_dashboard(pcf_services, app, tier):
+def generate_dashboard(pcf_services, resources_parent_path, app, tier):
     with open(pcf_dash_template_file, 'r', encoding='utf-8') as myfile:
         dash_template=myfile.read()
     dash_template = Template(dash_template)
@@ -96,7 +102,8 @@ def generate_dashboard(pcf_services, app, tier):
                                  DIEGO_CELL_1_GUID=pcf_services['diego_cell'][1]['guid'], 
                                  DIEGO_CELL_1_IP_0=pcf_services['diego_cell'][1]['ips'][0],
                                  DIEGO_CELL_2_GUID=pcf_services['diego_cell'][2]['guid'], 
-                                 DIEGO_CELL_2_IP_0=pcf_services['diego_cell'][2]['ips'][0])
+                                 DIEGO_CELL_2_IP_0=pcf_services['diego_cell'][2]['ips'][0],
+                                 RESOURCES_PARENT_PATH=resources_parent_path)
     return generated
 
     
@@ -110,12 +117,13 @@ def publish():
     
 def run():
     args = parse_args()
-    #pcf_services = populate_service_details(args)
-    populate_resource_details(args)
-    #print('pcf_services: ' + str(pcf_services))
-    #generated = generate_dashboard(pcf_services, args.app, args.tier)
-    #with open(pcf_dash_generated_file, 'w', encoding='utf-8') as myfile:
-    #    myfile.write(generated)
+    pcf_services = get_pcf_services(args)
+    resources_parent_path = get_resources_parent_path(args)
+    print('pcf_services: ' + str(pcf_services))
+    print('resources_parent_path: ' + str(resources_parent_path))
+    generated = generate_dashboard(pcf_services, resources_parent_path, args.app, args.tier)
+    with open(pcf_dash_generated_file, 'w', encoding='utf-8') as myfile:
+        myfile.write(generated)
     
 if __name__ == '__main__':
     run()
