@@ -126,6 +126,18 @@ def generate_healthrules(pcf_services, resources_parent_folder, app, tier):
                                        RESOURCES_PARENT_FOLDER=resources_parent_folder)
     return generated
 
+def upload_healthrules(healthrules_xml, args):
+    
+    url = args.controller_url + '/controller/healthrules/' + args.app
+    #if args.overwrite:
+    #    url += "?overwrite=true"
+
+    print('url: ' + url)    
+    
+    response = requests.post(url, auth=(args.user_name, args.user_pass), files={'file':healthrules_xml})
+    response.raise_for_status();
+    
+    print('response: ' + str(response.content))
     
 def start_flask():
     app.run(debug=True, port=8082)
@@ -147,6 +159,7 @@ def run():
     healthrules = generate_healthrules(pcf_services, resources_parent_folder, args.app, args.tier)
     with open(pcf_hrs_generated_file, 'w', encoding='utf-8') as myfile:
         myfile.write(healthrules)
+    upload_healthrules(healthrules, args)
     
 if __name__ == '__main__':
     run()
