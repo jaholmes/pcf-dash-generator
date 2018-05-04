@@ -8,8 +8,8 @@ import re
 
 pcf_dash_template_file = 'templates/pcf_dashboard_template_v1.json'
 pcf_dash_generated_file = 'generated/pcf_dashboard_generated.json'
-pcf_hrs_template_file = 'templates/pcf_healthrules_template_v1.json'
-pcf_hrs_generated_file = 'generated/pcf_healthrules_generated.json'
+pcf_hrs_template_file = 'templates/pcf_healthrules_template_v1.xml'
+pcf_hrs_generated_file = 'generated/pcf_healthrules_generated.xml'
 
 app = Flask(__name__)
 
