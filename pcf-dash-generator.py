@@ -26,7 +26,7 @@ def parse_args():
         print(args)
     return args
     
-def get_resources_parent_path(args):
+def get_resources_parent_folder(args):
     metric_path_root = 'Application Infrastructure Performance|' + args.tier + '|Custom Metrics|CF'
     query_prams='?output=json&metric-path=' + metric_path_root
     url = args.controller_url + '/controller/rest/applications/' + args.app + '/metrics' + query_prams
@@ -37,16 +37,16 @@ def get_resources_parent_path(args):
     folders = response.json()
     print('folders: ' + str(folders))
 
-    resource_parent_path = None
+    resource_parent_folder = None
     for folder in folders:
         #todo need to filter out other cf- matches like cf-redis, but wait for new version of tile
         #to confirm this is necessary (bosh/resource metric location may change)
         if re.match('cf-\w+', str(folder['name']), re.I) and 'redis' not in str(folder['name']):
             print('name: ' + str(folder['name']))
-            resource_parent_path = str(folder['name'])
-    if resource_parent_path is None: 
+            resource_parent_folder = str(folder['name'])
+    if resource_parent_folder is None: 
         raise RuntimeError("unable to locate resource metrics parent folder using url: " + url)
-    return resource_parent_path
+    return resource_parent_folder
     
     
     
@@ -91,7 +91,7 @@ def get_pcf_services(args):
 
     return pcf_services
 
-def generate_dashboard(pcf_services, resources_parent_path, app, tier):
+def generate_dashboard(pcf_services, resources_parent_folder, app, tier):
     with open(pcf_dash_template_file, 'r', encoding='utf-8') as myfile:
         dash_template=myfile.read()
     dash_template = Template(dash_template)
@@ -103,7 +103,27 @@ def generate_dashboard(pcf_services, resources_parent_path, app, tier):
                                  DIEGO_CELL_1_IP_0=pcf_services['diego_cell'][1]['ips'][0],
                                  DIEGO_CELL_2_GUID=pcf_services['diego_cell'][2]['guid'], 
                                  DIEGO_CELL_2_IP_0=pcf_services['diego_cell'][2]['ips'][0],
-                                 RESOURCES_PARENT_PATH=resources_parent_path)
+                                 RESOURCES_PARENT_FOLDER=resources_parent_folder)
+    return generated
+
+def generate_healthrules(pcf_services, resources_parent_folder, app, tier):
+    with open(pcf_hrs_template_file, 'r', encoding='utf-8') as myfile:
+        hr_template=myfile.read()
+    hr_template = Template(hr_template)
+    generated = hr_template.substitute(TIER_NAME=tier, 
+                                       DIEGO_CELL_0_GUID=pcf_services['diego_cell'][0]['guid'], 
+                                       DIEGO_CELL_0_IP_0=pcf_services['diego_cell'][0]['ips'][0],
+                                       DIEGO_CELL_1_GUID=pcf_services['diego_cell'][1]['guid'], 
+                                       DIEGO_CELL_1_IP_0=pcf_services['diego_cell'][1]['ips'][0],
+                                       DIEGO_CELL_2_GUID=pcf_services['diego_cell'][2]['guid'], 
+                                       DIEGO_CELL_2_IP_0=pcf_services['diego_cell'][2]['ips'][0],
+                                       DIEGO_BRAIN_GUID=pcf_services['diego_brain'][0]['guid'], 
+                                       DIEGO_BRAIN_IP=pcf_services['diego_brain'][0]['ips'][0],
+                                       ROUTER_GUID=pcf_services['router'][0]['guid'], 
+                                       ROUTER_IP=pcf_services['router'][0]['ips'][0],
+                                       DIEGO_DATABASE_GUID=pcf_services['diego_database'][0]['guid'], 
+                                       DIEGO_DATABASE_IP=pcf_services['diego_database'][0]['ips'][0],
+                                       RESOURCES_PARENT_FOLDER=resources_parent_folder)
     return generated
 
     
@@ -118,12 +138,15 @@ def publish():
 def run():
     args = parse_args()
     pcf_services = get_pcf_services(args)
-    resources_parent_path = get_resources_parent_path(args)
+    resources_parent_folder = get_resources_parent_folder(args)
     print('pcf_services: ' + str(pcf_services))
-    print('resources_parent_path: ' + str(resources_parent_path))
-    generated = generate_dashboard(pcf_services, resources_parent_path, args.app, args.tier)
+    print('resources_parent_folder: ' + str(resources_parent_folder))
+    dashboard = generate_dashboard(pcf_services, resources_parent_folder, args.app, args.tier)
     with open(pcf_dash_generated_file, 'w', encoding='utf-8') as myfile:
-        myfile.write(generated)
+        myfile.write(dashboard)
+    healthrules = generate_healthrules(pcf_services, resources_parent_folder, args.app, args.tier)
+    with open(pcf_hrs_generated_file, 'w', encoding='utf-8') as myfile:
+        myfile.write(healthrules)
     
 if __name__ == '__main__':
     run()

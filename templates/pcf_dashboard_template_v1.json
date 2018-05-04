@@ -4133,7 +4133,7 @@
                             "displayName": "null",
                             "inputMetricText": false,
                             "inputMetricPath": null,
-                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|CF|cf-16dbe69b77fa027ffdb4|router|0|undefined|system.cpu.user",
+                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|CF|${RESOURCES_PARENT_FOLDER}|router|0|undefined|system.cpu.user",
                             "scopeEntity": {
                                 "applicationName": "${APP_NAME}",
                                 "entityType": "APPLICATION_COMPONENT",
@@ -13990,7 +13990,7 @@
                             "displayName": "null",
                             "inputMetricText": false,
                             "inputMetricPath": null,
-                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|CF|cf-16dbe69b77fa027ffdb4|nfs_server|0|undefined|system.disk.persistent.percent",
+                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|CF|${RESOURCES_PARENT_FOLDER}|nfs_server|0|undefined|system.disk.persistent.percent",
                             "scopeEntity": {
                                 "applicationName": "${APP_NAME}",
                                 "entityType": "APPLICATION_COMPONENT",
