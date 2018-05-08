@@ -13,6 +13,16 @@ pcf_hrs_generated_file = 'generated/pcf_healthrules_generated.xml'
 
 app = Flask(__name__)
 
+#todo
+#logging with verbose option
+#exceptions, mapping to http error codes
+#flask/REST endpoints
+#    1. publish dashboard based on template on file system, optionally supply new settings
+#    2. publish with retry and delay for initial tile deployment use case
+#    3. get logs
+#    4. get default settings
+#    5. package as pcf app
+
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("-controller_url", help='the controller url, i.e. http://mycontroller:8090', required=True)
@@ -20,6 +30,8 @@ def parse_args():
     parser.add_argument("-user_pass", help='the controller user password', required=True)        
     parser.add_argument("-app", help='the Appd app where PCF metrics are published by the PCF tile', required=True)            
     parser.add_argument("-tier", help='the Appd tier where PCF metrics are published by the PCF tile', required=True)                
+    parser.add_argument("-overwrite", help='set to true to overwrite existing health rules with the same name in the target controller', 
+                        action='store_false', default=False, required=False)                    
     parser.add_argument("-v", "--verbose", action='store_true', dest="verbose", default=False, help="print verbose output")
     args = parser.parse_args()
     if args.verbose:
@@ -47,8 +59,6 @@ def get_resources_parent_folder(args):
     if resource_parent_folder is None: 
         raise RuntimeError("unable to locate resource metrics parent folder using url: " + url)
     return resource_parent_folder
-    
-    
     
 def get_pcf_services(args):
     metric_path_root = 'Application Infrastructure Performance|' + args.tier + '|Custom Metrics|CF|cf'    
@@ -129,8 +139,9 @@ def generate_healthrules(pcf_services, resources_parent_folder, app, tier):
 def upload_healthrules(healthrules_xml, args):
     
     url = args.controller_url + '/controller/healthrules/' + args.app
-    #if args.overwrite:
-    #    url += "?overwrite=true"
+    
+    if args.overwrite:
+        url += "?overwrite=true"
 
     print('url: ' + url)    
     
@@ -138,6 +149,17 @@ def upload_healthrules(healthrules_xml, args):
     response.raise_for_status();
     
     print('response: ' + str(response.content))
+
+def upload_dashboard(dashboard_json, args):
+    
+    url = args.controller_url + '/controller/CustomDashboardImportExportServlet'
+
+    print('url: ' + url)    
+    
+    response = requests.post(url, auth=(args.user_name, args.user_pass), files={'file':dashboard_json})
+    response.raise_for_status();
+    
+    #print('response: ' + str(response.content))
     
 def start_flask():
     app.run(debug=True, port=8082)
@@ -159,6 +181,7 @@ def run():
     healthrules = generate_healthrules(pcf_services, resources_parent_folder, args.app, args.tier)
     with open(pcf_hrs_generated_file, 'w', encoding='utf-8') as myfile:
         myfile.write(healthrules)
+    upload_dashboard(dashboard, args)
     upload_healthrules(healthrules, args)
     
 if __name__ == '__main__':
