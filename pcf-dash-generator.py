@@ -5,6 +5,8 @@ from string import Template
 import argparse
 import requests
 import re
+import logging
+from logging.config import fileConfig
 
 pcf_dash_template_file = 'templates/pcf_dashboard_template_v1.json'
 pcf_dash_generated_file = 'generated/pcf_dashboard_generated.json'
@@ -12,6 +14,9 @@ pcf_hrs_template_file = 'templates/pcf_healthrules_template_v1.xml'
 pcf_hrs_generated_file = 'generated/pcf_healthrules_generated.xml'
 
 app = Flask(__name__)
+
+fileConfig('logging_config.ini')
+logger = logging.getLogger()
 
 #todo
 #logging with verbose option
@@ -32,76 +37,76 @@ def parse_args():
     parser.add_argument("-tier", help='the Appd tier where PCF metrics are published by the PCF tile', required=True)                
     parser.add_argument("-overwrite", help='set to true to overwrite existing health rules with the same name in the target controller', 
                         action='store_false', default=False, required=False)                    
-    parser.add_argument("-v", "--verbose", action='store_true', dest="verbose", default=False, help="print verbose output")
     args = parser.parse_args()
-    if args.verbose:
-        print(args)
+    logger.info('args: ' + str(args))
     return args
     
 def get_resources_parent_folder(args):
     metric_path_root = 'Application Infrastructure Performance|' + args.tier + '|Custom Metrics|CF'
     query_prams='?output=json&metric-path=' + metric_path_root
     url = args.controller_url + '/controller/rest/applications/' + args.app + '/metrics' + query_prams
-    if args.verbose: print('url: ' + url)    
+    logger.debug('url: ' + url)    
     response = requests.get(url, auth=(args.user_name, args.user_pass))
     response.raise_for_status();
-    print(response.json()) 
+    logger.debug('response: ' + str(response.json()))
     folders = response.json()
-    print('folders: ' + str(folders))
+
+    logger.debug('folders: ' + str(folders))
 
     resource_parent_folder = None
     for folder in folders:
         #todo need to filter out other cf- matches like cf-redis, but wait for new version of tile
         #to confirm this is necessary (bosh/resource metric location may change)
         if re.match('cf-\w+', str(folder['name']), re.I) and 'redis' not in str(folder['name']):
-            print('name: ' + str(folder['name']))
+            logger.debug('name: ' + str(folder['name']))
             resource_parent_folder = str(folder['name'])
     if resource_parent_folder is None: 
         raise RuntimeError("unable to locate resource metrics parent folder using url: " + url)
     return resource_parent_folder
     
 def get_pcf_services(args):
+    logger.info('getting pcf service details from controller')
     metric_path_root = 'Application Infrastructure Performance|' + args.tier + '|Custom Metrics|CF|cf'    
     query_prams='?output=json&metric-path=' + metric_path_root
     url = args.controller_url + '/controller/rest/applications/' + args.app + '/metrics' + query_prams
-    if args.verbose: print('url: ' + url)    
+    logger.debug('url: ' + url)    
     response = requests.get(url, auth=(args.user_name, args.user_pass))
     response.raise_for_status();
-    print(response.json()) 
+    logger.debug('response: + ' + str(response.json())) 
     pcf_service_list = response.json()
     
     pcf_services = {}
     for pcf_service in pcf_service_list:
         service_name = pcf_service['name']
-        print('service: ' + service_name)
+        logger.debug('service: ' + service_name)
         pcf_service_metric_path = metric_path_root + '|' + service_name 
         query_prams='?output=json&metric-path=' + pcf_service_metric_path
         service_url = args.controller_url + '/controller/rest/applications/' + args.app + '/metrics' + query_prams
-        print ('service_url: ' + service_url)
+        logger.debug('service_url: ' + service_url)
         response = requests.get(service_url, auth=(args.user_name, args.user_pass))
         response.raise_for_status();
         service_instances = response.json()
-        print('nbr of instances: ' + str(len(service_instances))) 
+        logger.debug('nbr of instances: ' + str(len(service_instances))) 
         pcf_services[service_name] = [dict() for x in range(len(service_instances))]
         for i, service_instance in enumerate(service_instances):
-            print('service instance: ' + str(service_instance))
+            logger.debug('service instance: ' + str(service_instance))
             guid = service_instance['name']
             pcf_services[service_name][i] = {'guid' : guid, 'ips' : []}
             guid_url = service_url + '|' + guid
-            print ('guid_url: ' + guid_url)
+            logger.debug('guid_url: ' + guid_url)
             response = requests.get(guid_url, auth=(args.user_name, args.user_pass))
             response.raise_for_status();
             ips = response.json()
-            print('ips: ' + str(ips))
+            logger.debug('ips: ' + str(ips))
             pcf_services[service_name][i]['ips'] = [None] * len(ips)
             for j, ip in enumerate(ips):
                  #pcf_services[service_name][i] = {'guid' : guid, 'ips' : []}
-                 print('ip: ' + ip['name'])
+                 logger.debug('ip: ' + ip['name'])
                  pcf_services[service_name][i]['ips'][j] = ip['name']
-
     return pcf_services
 
 def generate_dashboard(pcf_services, resources_parent_folder, app, tier):
+    logger.info('generating dashboard from template')
     with open(pcf_dash_template_file, 'r', encoding='utf-8') as myfile:
         dash_template=myfile.read()
     dash_template = Template(dash_template)
@@ -117,6 +122,7 @@ def generate_dashboard(pcf_services, resources_parent_folder, app, tier):
     return generated
 
 def generate_healthrules(pcf_services, resources_parent_folder, app, tier):
+    logger.info('generating health rules from template')    
     with open(pcf_hrs_template_file, 'r', encoding='utf-8') as myfile:
         hr_template=myfile.read()
     hr_template = Template(hr_template)
@@ -137,29 +143,22 @@ def generate_healthrules(pcf_services, resources_parent_folder, app, tier):
     return generated
 
 def upload_healthrules(healthrules_xml, args):
-    
+    logger.info('uploading health rules to controller (overwrite=(' + str(args.overwrite) + '))')    
     url = args.controller_url + '/controller/healthrules/' + args.app
-    
     if args.overwrite:
         url += "?overwrite=true"
-
-    print('url: ' + url)    
-    
+    logger.debug('url: ' + url)    
     response = requests.post(url, auth=(args.user_name, args.user_pass), files={'file':healthrules_xml})
     response.raise_for_status();
-    
-    print('response: ' + str(response.content))
+    logger.debug('response: ' + str(response.content))
 
 def upload_dashboard(dashboard_json, args):
-    
+    logger.info('uploading dashboard to controller')        
     url = args.controller_url + '/controller/CustomDashboardImportExportServlet'
-
-    print('url: ' + url)    
-    
+    logger.debug('url: ' + url)    
     response = requests.post(url, auth=(args.user_name, args.user_pass), files={'file':dashboard_json})
     response.raise_for_status();
-    
-    #print('response: ' + str(response.content))
+    logger.debug('response status code: ' + str(response.status_code))
     
 def start_flask():
     app.run(debug=True, port=8082)
@@ -170,11 +169,12 @@ def publish():
     return 'done!'
     
 def run():
+    logger.info('starting deployment of pcf dashboards')
     args = parse_args()
     pcf_services = get_pcf_services(args)
     resources_parent_folder = get_resources_parent_folder(args)
-    print('pcf_services: ' + str(pcf_services))
-    print('resources_parent_folder: ' + str(resources_parent_folder))
+    logger.debug('pcf_services: ' + str(pcf_services))
+    logger.debug('resources_parent_folder: ' + str(resources_parent_folder))
     dashboard = generate_dashboard(pcf_services, resources_parent_folder, args.app, args.tier)
     with open(pcf_dash_generated_file, 'w', encoding='utf-8') as myfile:
         myfile.write(dashboard)
@@ -183,7 +183,8 @@ def run():
         myfile.write(healthrules)
     upload_dashboard(dashboard, args)
     upload_healthrules(healthrules, args)
-    
+    logger.info('done deployment pcf dashboards')
+        
 if __name__ == '__main__':
     run()
 
