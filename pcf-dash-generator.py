@@ -183,7 +183,7 @@ def run():
         myfile.write(healthrules)
     upload_dashboard(dashboard, args)
     upload_healthrules(healthrules, args)
-    logger.info('done deployment pcf dashboards')
+    logger.info('done deploying pcf dashboards')
         
 if __name__ == '__main__':
     run()
