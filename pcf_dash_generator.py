@@ -1,22 +1,22 @@
 
 #!flask/bin/python
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from string import Template
 import argparse
 import requests
 import re
 import logging
 from logging.config import fileConfig
+import app_config
 
 pcf_dash_template_file = 'templates/pcf_dashboard_template_v1.json'
 pcf_dash_generated_file = 'generated/pcf_dashboard_generated.json'
 pcf_hrs_template_file = 'templates/pcf_healthrules_template_v1.xml'
 pcf_hrs_generated_file = 'generated/pcf_healthrules_generated.xml'
 
-app = Flask(__name__)
-
 fileConfig('logging_config.ini')
 logger = logging.getLogger()
+app = Flask(__name__)
 
 #todo
 #logging with verbose option
@@ -26,27 +26,38 @@ logger = logging.getLogger()
 #    2. publish with retry and delay for initial tile deployment use case
 #    3. get logs
 #    4. get default settings
-#    5. package as pcf app
+#n    5. package as pcf app
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-controller_url", help='the controller url, i.e. http://mycontroller:8090', required=True)
-    parser.add_argument("-user_name", help='the controller username (user@account)', required=True)    
-    parser.add_argument("-user_pass", help='the controller user password', required=True)        
-    parser.add_argument("-app", help='the Appd app where PCF metrics are published by the PCF tile', required=True)            
-    parser.add_argument("-tier", help='the Appd tier where PCF metrics are published by the PCF tile', required=True)                
-    parser.add_argument("-overwrite", help='set to true to overwrite existing health rules with the same name in the target controller', 
+    parser.add_argument('-controller_url', help='the controller url, i.e. http://mycontroller:8090', required=True)
+    parser.add_argument('-user_name', help='the controller username (user@account)', required=True)    
+    parser.add_argument('-user_pass', help='the controller user password', required=True)        
+    parser.add_argument('-app', help='the Appd app where PCF metrics are published by the PCF tile', required=True)            
+    parser.add_argument('-tier', help='the Appd tier where PCF metrics are published by the PCF tile', required=True)                
+    parser.add_argument('-start_service', help='start the rest API service', 
+                        action='store_true', default=False, required=False)
+    parser.add_argument('-port', help='override the default port 8080 for the service', 
+                        type=int, default=8080, required=False)
+    parser.add_argument("-overwrite_hrs", help='set to true to overwrite existing health rules with the same name in the target controller', 
                         action='store_false', default=False, required=False)                    
     args = parser.parse_args()
     logger.info('args: ' + str(args))
-    return args
+    app_config.controller_url = args.controller_url
+    app_config.user_name = args.user_name
+    app_config.user_pass = args.user_pass    
+    app_config.app = args.app
+    app_config.tier = args.tier
+    app_config.overwrite_hrs = args.overwrite_hrs
+    app_config.start_service = args.start_service
+    app_config.port = args.port
     
-def get_resources_parent_folder(args):
-    metric_path_root = 'Application Infrastructure Performance|' + args.tier + '|Custom Metrics|CF'
+def get_resources_parent_folder():
+    metric_path_root = 'Application Infrastructure Performance|' + app_config.tier + '|Custom Metrics|CF'
     query_prams='?output=json&metric-path=' + metric_path_root
-    url = args.controller_url + '/controller/rest/applications/' + args.app + '/metrics' + query_prams
+    url = app_config.controller_url + '/controller/rest/applications/' + app_config.app + '/metrics' + query_prams
     logger.debug('url: ' + url)    
-    response = requests.get(url, auth=(args.user_name, args.user_pass))
+    response = requests.get(url, auth=(app_config.user_name, app_config.user_pass))
     response.raise_for_status();
     logger.debug('response: ' + str(response.json()))
     folders = response.json()
@@ -64,13 +75,13 @@ def get_resources_parent_folder(args):
         raise RuntimeError("unable to locate resource metrics parent folder using url: " + url)
     return resource_parent_folder
     
-def get_pcf_services(args):
+def get_pcf_services():
     logger.info('getting pcf service details from controller')
-    metric_path_root = 'Application Infrastructure Performance|' + args.tier + '|Custom Metrics|CF|cf'    
+    metric_path_root = 'Application Infrastructure Performance|' + app_config.tier + '|Custom Metrics|CF|cf'    
     query_prams='?output=json&metric-path=' + metric_path_root
-    url = args.controller_url + '/controller/rest/applications/' + args.app + '/metrics' + query_prams
+    url = app_config.controller_url + '/controller/rest/applications/' + app_config.app + '/metrics' + query_prams
     logger.debug('url: ' + url)    
-    response = requests.get(url, auth=(args.user_name, args.user_pass))
+    response = requests.get(url, auth=(app_config.user_name, app_config.user_pass))
     response.raise_for_status();
     logger.debug('response: + ' + str(response.json())) 
     pcf_service_list = response.json()
@@ -81,9 +92,9 @@ def get_pcf_services(args):
         logger.debug('service: ' + service_name)
         pcf_service_metric_path = metric_path_root + '|' + service_name 
         query_prams='?output=json&metric-path=' + pcf_service_metric_path
-        service_url = args.controller_url + '/controller/rest/applications/' + args.app + '/metrics' + query_prams
+        service_url = app_config.controller_url + '/controller/rest/applications/' + app_config.app + '/metrics' + query_prams
         logger.debug('service_url: ' + service_url)
-        response = requests.get(service_url, auth=(args.user_name, args.user_pass))
+        response = requests.get(service_url, auth=(app_config.user_name, app_config.user_pass))
         response.raise_for_status();
         service_instances = response.json()
         logger.debug('nbr of instances: ' + str(len(service_instances))) 
@@ -94,7 +105,7 @@ def get_pcf_services(args):
             pcf_services[service_name][i] = {'guid' : guid, 'ips' : []}
             guid_url = service_url + '|' + guid
             logger.debug('guid_url: ' + guid_url)
-            response = requests.get(guid_url, auth=(args.user_name, args.user_pass))
+            response = requests.get(guid_url, auth=(app_config.user_name, app_config.user_pass))
             response.raise_for_status();
             ips = response.json()
             logger.debug('ips: ' + str(ips))
@@ -142,51 +153,63 @@ def generate_healthrules(pcf_services, resources_parent_folder, app, tier):
                                        RESOURCES_PARENT_FOLDER=resources_parent_folder)
     return generated
 
-def upload_healthrules(healthrules_xml, args):
-    logger.info('uploading health rules to controller (overwrite=(' + str(args.overwrite) + '))')    
-    url = args.controller_url + '/controller/healthrules/' + args.app
-    if args.overwrite:
+def upload_healthrules(healthrules_xml):
+    logger.info('uploading health rules to controller (overwrite=(' + str(app_config.overwrite_hrs) + '))')    
+    url = app_config.controller_url + '/controller/healthrules/' + app_config.app
+    if app_config.overwrite_hrs:
         url += "?overwrite=true"
     logger.debug('url: ' + url)    
-    response = requests.post(url, auth=(args.user_name, args.user_pass), files={'file':healthrules_xml})
+    response = requests.post(url, auth=(app_config.user_name, app_config.user_pass), files={'file':healthrules_xml})
     response.raise_for_status();
     logger.debug('response: ' + str(response.content))
 
-def upload_dashboard(dashboard_json, args):
+def upload_dashboard(dashboard_json):
     logger.info('uploading dashboard to controller')        
-    url = args.controller_url + '/controller/CustomDashboardImportExportServlet'
+    url = app_config.controller_url + '/controller/CustomDashboardImportExportServlet'
     logger.debug('url: ' + url)    
-    response = requests.post(url, auth=(args.user_name, args.user_pass), files={'file':dashboard_json})
+    response = requests.post(url, auth=(app_config.user_name, app_config.user_pass), files={'file':dashboard_json})
     response.raise_for_status();
     logger.debug('response status code: ' + str(response.status_code))
-    
-def start_flask():
-    app.run(debug=True, port=8082)
 
-@app.route('/publish')
-def publish():
-    gen()
-    return 'done!'
-    
-def run():
-    logger.info('starting deployment of pcf dashboards')
-    args = parse_args()
-    pcf_services = get_pcf_services(args)
-    resources_parent_folder = get_resources_parent_folder(args)
+def publish_dashboard_and_hrs():
+    logger.info('publishing pcf dashboards and hrs')
+    pcf_services = get_pcf_services()
+    resources_parent_folder = get_resources_parent_folder()
     logger.debug('pcf_services: ' + str(pcf_services))
     logger.debug('resources_parent_folder: ' + str(resources_parent_folder))
-    dashboard = generate_dashboard(pcf_services, resources_parent_folder, args.app, args.tier)
-    with open(pcf_dash_generated_file, 'w', encoding='utf-8') as myfile:
-        myfile.write(dashboard)
-    healthrules = generate_healthrules(pcf_services, resources_parent_folder, args.app, args.tier)
-    with open(pcf_hrs_generated_file, 'w', encoding='utf-8') as myfile:
-        myfile.write(healthrules)
-    upload_dashboard(dashboard, args)
-    upload_healthrules(healthrules, args)
-    logger.info('done deploying pcf dashboards')
+    dashboard = generate_dashboard(pcf_services, resources_parent_folder, app_config.app, app_config.tier)
+    healthrules = generate_healthrules(pcf_services, resources_parent_folder, app_config.app, app_config.tier)
+    if not app_config.start_service:
+        logger.info('writing generated dashboard and hrs to file system')
+        with open(pcf_dash_generated_file, 'w', encoding='utf-8') as myfile:
+            myfile.write(dashboard)
+        with open(pcf_hrs_generated_file, 'w', encoding='utf-8') as myfile:
+            myfile.write(healthrules)
+    upload_dashboard(dashboard)
+    upload_healthrules(healthrules)
+    logger.info('done publishing pcf dashboards and hrs')
+    
+def start_flask():
+    logger.info('starting service on port ' + str(app_config.port))
+    app.run(debug=True, port=app_config.port)
+
+@app.route('/pcf-dash/publish', methods=['POST'])
+def publish():
+    content = request.json
+    publish_dashboard_and_hrs()
+    logger.debug('content: ' + str(content))
+    return 'done!'
+    
+def start_app():
+    parse_args()
+    if app_config.start_service:
+        logger.info('starting service')
+        start_flask()
+    else:
+        publish_dashboard_and_hrs()
         
 if __name__ == '__main__':
-    run()
+    start_app()
 
 
 
