@@ -1,7 +1,7 @@
-
 #!flask/bin/python
 from flask import Flask, jsonify, request
 from string import Template
+import os
 import argparse
 import requests
 import re
@@ -26,31 +26,41 @@ app = Flask(__name__)
 #    2. publish with retry and delay for initial tile deployment use case
 #    3. get logs
 #    4. get default settings
-#n    5. package as pcf app
+#n    5. package as pcf app - see tile
+#     support default = os.env
+#    6. gunicorn conversion
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-controller_url', help='the controller url, i.e. http://mycontroller:8090', required=True)
-    parser.add_argument('-user_name', help='the controller username (user@account)', required=True)    
-    parser.add_argument('-user_pass', help='the controller user password', required=True)        
-    parser.add_argument('-app', help='the Appd app where PCF metrics are published by the PCF tile', required=True)            
-    parser.add_argument('-tier', help='the Appd tier where PCF metrics are published by the PCF tile', required=True)                
-    parser.add_argument('-start_service', help='start the rest API service', 
-                        action='store_true', default=False, required=False)
-    parser.add_argument('-port', help='override the default port 8080 for the service', 
-                        type=int, default=8080, required=False)
+    parser.add_argument('-controller_host', help='the controller host', default=os.getenv('host-name', None))
+    parser.add_argument('-controller_port', help='the controller port', default=os.getenv('port', None))
+    parser.add_argument('-controller_ssl', help='True if ssl is enabled', default=os.getenv('ssl-enabled', False))
+    parser.add_argument('-user_name', help='the controller username (user@account)')    
+    parser.add_argument('-user_pass', help='the controller user password', required=False)        
+    parser.add_argument('-app', help='the Appd app where PCF metrics are published by the PCF tile', 
+                        default=os.getenv('application-name', None))            
+    parser.add_argument('-tier', help='the Appd tier where PCF metrics are published by the PCF tile',
+                        default=os.getenv('tier-name', None))
+    parser.add_argument('-start_service', help='start the rest API service', action='store_true', default=False)
+    parser.add_argument('-service_port', help='override the default port 8080 for the service', type=int, default=8080)
     parser.add_argument("-overwrite_hrs", help='set to true to overwrite existing health rules with the same name in the target controller', 
-                        action='store_false', default=False, required=False)                    
+                        action='store_false', default=False)                    
     args = parser.parse_args()
     logger.info('args: ' + str(args))
-    app_config.controller_url = args.controller_url
+    if args.controller_ssl is True: 
+        app_config.controller_url = 'https://' 
+    else:
+        app_config.controller_url = 'http://'
+    app_config.controller_url += args.controller_host
+    if args.controller_port is not None: app_config.controller_url += ':' + args.controller_port
+    logger.debug('controller_url: ' + app_config.controller_url)  
     app_config.user_name = args.user_name
     app_config.user_pass = args.user_pass    
     app_config.app = args.app
     app_config.tier = args.tier
     app_config.overwrite_hrs = args.overwrite_hrs
     app_config.start_service = args.start_service
-    app_config.port = args.port
+    app_config.service_port = args.service_port
     
 def get_resources_parent_folder():
     metric_path_root = 'Application Infrastructure Performance|' + app_config.tier + '|Custom Metrics|CF'
@@ -190,8 +200,8 @@ def publish_dashboard_and_hrs():
     logger.info('done publishing pcf dashboards and hrs')
     
 def start_flask():
-    logger.info('starting service on port ' + str(app_config.port))
-    app.run(debug=True, port=app_config.port)
+    logger.info('starting service on port ' + str(app_config.service_port))
+    app.run(debug=True, port=app_config.service_port)
 
 @app.route('/pcf-dash/publish', methods=['POST'])
 def publish():
