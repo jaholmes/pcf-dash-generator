@@ -19,24 +19,23 @@ logger = logging.getLogger()
 app = Flask(__name__)
 
 #todo
-#logging with verbose option
 #exceptions, mapping to http error codes
 #flask/REST endpoints
 #    1. publish dashboard based on template on file system, optionally supply new settings
 #    2. publish with retry and delay for initial tile deployment use case
 #    3. get logs
 #    4. get default settings
-#n    5. package as pcf app - see tile
-#     support default = os.env
-#    6. gunicorn conversion
+#package as pcf app - see tile
+#gunicorn conversion
 
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('-controller_host', help='the controller host', default=os.getenv('host-name', None))
     parser.add_argument('-controller_port', help='the controller port', default=os.getenv('port', None))
     parser.add_argument('-controller_ssl', help='True if ssl is enabled', default=os.getenv('ssl-enabled', False))
-    parser.add_argument('-user_name', help='the controller username (user@account)')    
-    parser.add_argument('-user_pass', help='the controller user password', required=False)        
+    parser.add_argument('-account_name', help='the controller account name', default=os.getenv('account-name', 'customer1'))    
+    parser.add_argument('-user_name', help='the controller username')        
+    parser.add_argument('-user_pass', help='the controller user password')        
     parser.add_argument('-app', help='the Appd app where PCF metrics are published by the PCF tile', 
                         default=os.getenv('application-name', None))            
     parser.add_argument('-tier', help='the Appd tier where PCF metrics are published by the PCF tile',
@@ -53,7 +52,8 @@ def parse_args():
         app_config.controller_url = 'http://'
     app_config.controller_url += args.controller_host
     if args.controller_port is not None: app_config.controller_url += ':' + args.controller_port
-    logger.debug('controller_url: ' + app_config.controller_url)  
+    logger.debug('controller_url: ' + app_config.controller_url)
+    app_config.account_name = args.account_name
     app_config.user_name = args.user_name
     app_config.user_pass = args.user_pass    
     app_config.app = args.app
@@ -67,7 +67,7 @@ def get_resources_parent_folder():
     query_prams='?output=json&metric-path=' + metric_path_root
     url = app_config.controller_url + '/controller/rest/applications/' + app_config.app + '/metrics' + query_prams
     logger.debug('url: ' + url)    
-    response = requests.get(url, auth=(app_config.user_name, app_config.user_pass))
+    response = requests.get(url, auth=(app_config.get_full_user_name(), app_config.user_pass))
     response.raise_for_status();
     logger.debug('response: ' + str(response.json()))
     folders = response.json()
@@ -91,7 +91,7 @@ def get_pcf_services():
     query_prams='?output=json&metric-path=' + metric_path_root
     url = app_config.controller_url + '/controller/rest/applications/' + app_config.app + '/metrics' + query_prams
     logger.debug('url: ' + url)    
-    response = requests.get(url, auth=(app_config.user_name, app_config.user_pass))
+    response = requests.get(url, auth=(app_config.get_full_user_name(), app_config.user_pass))
     response.raise_for_status();
     logger.debug('response: + ' + str(response.json())) 
     pcf_service_list = response.json()
@@ -104,7 +104,7 @@ def get_pcf_services():
         query_prams='?output=json&metric-path=' + pcf_service_metric_path
         service_url = app_config.controller_url + '/controller/rest/applications/' + app_config.app + '/metrics' + query_prams
         logger.debug('service_url: ' + service_url)
-        response = requests.get(service_url, auth=(app_config.user_name, app_config.user_pass))
+        response = requests.get(service_url, auth=(app_config.get_full_user_name(), app_config.user_pass))
         response.raise_for_status();
         service_instances = response.json()
         logger.debug('nbr of instances: ' + str(len(service_instances))) 
@@ -115,7 +115,7 @@ def get_pcf_services():
             pcf_services[service_name][i] = {'guid' : guid, 'ips' : []}
             guid_url = service_url + '|' + guid
             logger.debug('guid_url: ' + guid_url)
-            response = requests.get(guid_url, auth=(app_config.user_name, app_config.user_pass))
+            response = requests.get(guid_url, auth=(app_config.get_full_user_name(), app_config.user_pass))
             response.raise_for_status();
             ips = response.json()
             logger.debug('ips: ' + str(ips))
@@ -169,7 +169,7 @@ def upload_healthrules(healthrules_xml):
     if app_config.overwrite_hrs:
         url += "?overwrite=true"
     logger.debug('url: ' + url)    
-    response = requests.post(url, auth=(app_config.user_name, app_config.user_pass), files={'file':healthrules_xml})
+    response = requests.post(url, auth=(app_config.get_full_user_name(), app_config.user_pass), files={'file':healthrules_xml})
     response.raise_for_status();
     logger.debug('response: ' + str(response.content))
 
@@ -177,7 +177,7 @@ def upload_dashboard(dashboard_json):
     logger.info('uploading dashboard to controller')        
     url = app_config.controller_url + '/controller/CustomDashboardImportExportServlet'
     logger.debug('url: ' + url)    
-    response = requests.post(url, auth=(app_config.user_name, app_config.user_pass), files={'file':dashboard_json})
+    response = requests.post(url, auth=(app_config.get_full_user_name(), app_config.user_pass), files={'file':dashboard_json})
     response.raise_for_status();
     logger.debug('response status code: ' + str(response.status_code))
 
