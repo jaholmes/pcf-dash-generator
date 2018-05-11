@@ -16,43 +16,49 @@ pcf_hrs_generated_file = 'generated/pcf_healthrules_generated.xml'
 
 fileConfig('logging_config.ini')
 logger = logging.getLogger()
-app = Flask(__name__)
+service = Flask(__name__)
+commandline = False
 
 #todo
-#exceptions, mapping to http error codes
 #flask/REST endpoints
-#    1. publish dashboard based on template on file system, optionally supply new settings
+#    1. publish dashboard based on template on file system, 
+#             optionally supply new settings
+#             optionally supply overwrite flag
 #    2. publish with retry and delay for initial tile deployment use case
 #    3. get logs
 #    4. get default settings
-#package as pcf app - see tile
-#gunicorn conversion
+#exceptions, mapping to http error codes
+
+def parse_env():
+    controller_host = os.getenv('controller-host-name', None)
+    controller_port = os.getenv('controller-port', None)
+    controller_ssl = os.getenv('ssl_enabled', None)
+    app_config.controller_url = app_config.get_controller_url(controller_host, controller_port, controller_ssl)
+    logger.debug('controller url: ' + app_config.controller_url)    
+    app_config.account_name = os.getenv('account-name', 'customer1')    
+    app_config.user_name = os.getenv('user-name', None)
+    app_config.user_pass = os.getenv('user-password', None)       
+    app_config.app = os.getenv('application-name', None)          
+    app_config.tier = os.getenv('tier-name', None)
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-controller_host', help='the controller host', default=os.getenv('host-name', None))
-    parser.add_argument('-controller_port', help='the controller port', default=os.getenv('port', None))
-    parser.add_argument('-controller_ssl', help='True if ssl is enabled', default=os.getenv('ssl-enabled', False))
-    parser.add_argument('-account_name', help='the controller account name', default=os.getenv('account-name', 'customer1'))    
-    parser.add_argument('-user_name', help='the controller username')        
-    parser.add_argument('-user_pass', help='the controller user password')        
-    parser.add_argument('-app', help='the Appd app where PCF metrics are published by the PCF tile', 
-                        default=os.getenv('application-name', None))            
-    parser.add_argument('-tier', help='the Appd tier where PCF metrics are published by the PCF tile',
-                        default=os.getenv('tier-name', None))
-    parser.add_argument('-start_service', help='start the rest API service', action='store_true', default=False)
-    parser.add_argument('-service_port', help='override the default port 8080 for the service', type=int, default=8080)
-    parser.add_argument("-overwrite_hrs", help='set to true to overwrite existing health rules with the same name in the target controller', 
-                        action='store_false', default=False)                    
+    parser.add_argument('--controller_host', help='the controller host', default=None)
+    parser.add_argument('--controller_port', help='the controller port', default=None)
+    parser.add_argument('--controller_ssl', help='True if ssl is enabled', default=False)
+    parser.add_argument('--account_name', help='the controller account name', default='customer1')    
+    parser.add_argument('--user_name', help='the controller username', default=None)
+    parser.add_argument('--user_pass', help='the controller user password', default=None)       
+    parser.add_argument('--app', help='the Appd app where PCF metrics are published by the PCF tile', default=None)            
+    parser.add_argument('--tier', help='the Appd tier where PCF metrics are published by the PCF tile', default=None)            
+    parser.add_argument('--start_service', help='start the rest API service', action='store_true', default=False)
+    parser.add_argument('--service_port', help='override the default port 8080 for the service', type=int, default=8080)
+    parser.add_argument("--overwrite_hrs", help='set to true to overwrite existing health rules with the same name in the target controller', 
+                        action='store_true', default=False)
     args = parser.parse_args()
     logger.info('args: ' + str(args))
-    if args.controller_ssl is True: 
-        app_config.controller_url = 'https://' 
-    else:
-        app_config.controller_url = 'http://'
-    app_config.controller_url += args.controller_host
-    if args.controller_port is not None: app_config.controller_url += ':' + args.controller_port
-    logger.debug('controller_url: ' + app_config.controller_url)
+    app_config.controller_url = app_config.get_controller_url(args.controller_host, args.controller_port, args.controller_ssl)
+    logger.debug('controller url: ' + app_config.controller_url)
     app_config.account_name = args.account_name
     app_config.user_name = args.user_name
     app_config.user_pass = args.user_pass    
@@ -189,7 +195,7 @@ def publish_dashboard_and_hrs():
     logger.debug('resources_parent_folder: ' + str(resources_parent_folder))
     dashboard = generate_dashboard(pcf_services, resources_parent_folder, app_config.app, app_config.tier)
     healthrules = generate_healthrules(pcf_services, resources_parent_folder, app_config.app, app_config.tier)
-    if not app_config.start_service:
+    if commandline and not app_config.start_service:
         logger.info('writing generated dashboard and hrs to file system')
         with open(pcf_dash_generated_file, 'w', encoding='utf-8') as myfile:
             myfile.write(dashboard)
@@ -201,26 +207,32 @@ def publish_dashboard_and_hrs():
     
 def start_flask():
     logger.info('starting service on port ' + str(app_config.service_port))
-    app.run(debug=True, port=app_config.service_port)
+    service.run(debug=True, port=app_config.service_port)
 
-@app.route('/pcf-dash/publish', methods=['POST'])
+@service.route('/pcf-dash/publish', methods=['POST'])
 def publish():
-    content = request.json
+    #todo content = request.json
+    #logger.debug('content: ' + str(content))
     publish_dashboard_and_hrs()
-    logger.debug('content: ' + str(content))
-    return 'done!'
+    return 'done'
     
-def start_app():
+def start_app_commandline():
+    commandline = True
     parse_args()
     if app_config.start_service:
         logger.info('starting service')
         start_flask()
     else:
         publish_dashboard_and_hrs()
+
+def start_app_pcf():
+    parse_env()
+    gunicorn_logger = logging.getLogger('gunicorn.error')
+    if gunicorn_logger is not None:
+        service.logger.handlers = gunicorn_logger.handlers
+        service.logger.setLevel(gunicorn_logger.level)
         
 if __name__ == '__main__':
-    start_app()
-
-
-
-    #start_flask()
+    start_app_commandline()
+else:
+    start_app_pcf()

@@ -3,4 +3,6 @@
 .project
 .pydevproject
 generated/*
+resources/*
+vendor/*
 .DS_Store

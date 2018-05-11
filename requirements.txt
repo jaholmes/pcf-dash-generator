@@ -1,0 +1,17 @@
+click==6.7
+Flask==0.12.2
+itsdangerous==0.24
+Jinja2==2.10
+MarkupSafe==1.0
+Werkzeug==0.14.1
+wheel==0.24.0
+gunicorn==19.7.1
+regex==2018.2.21
+requests==2.18.4
+certifi==2018.4.16
+chardet==3.0.4
+idna==2.6
+jmespath==0.9.3
+setuptools==39.0.1
+toml==0.9.4
+urllib3==1.22
