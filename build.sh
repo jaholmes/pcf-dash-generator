@@ -2,6 +2,8 @@
 
 cd "${APP_DIR}"
 
+mkdir -p resources
+
 RESOURCES_DIR="$( cd "resources" && pwd )"
 
 mkdir -p vendor

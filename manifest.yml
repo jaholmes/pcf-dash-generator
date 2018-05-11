@@ -1,0 +1,15 @@
+applications:
+- name: appdynamics-pcf-dash-generator-0.1
+  path: resources/app.zip
+  memory: 128MB
+  buildpack: python_buildpack
+  command: gunicorn --config service_config.py pcf_dash_generator:service
+  #env:
+  #  controller-host-name:
+  #  controller-port:
+  #  ssl-enabled:
+  #  account-name:
+  #  user-name:
+  #  user-password: 
+  #  application-name:
+  #  tier-name:
