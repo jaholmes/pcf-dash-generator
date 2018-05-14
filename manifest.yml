@@ -1,6 +1,6 @@
 applications:
-- name: appdynamics-pcf-dash-generator-0.1
-  path: resources/app.zip
+- name: appdynamics-pcf-dash-generator
+  path: resources/dashboard.zip
   memory: 128MB
   buildpack: python_buildpack
   command: gunicorn --config service_config.py pcf_dash_generator:service
