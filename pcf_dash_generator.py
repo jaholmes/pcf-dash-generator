@@ -30,16 +30,16 @@ commandline = False
 #exceptions, mapping to http error codes
 
 def parse_env():
-    controller_host = os.getenv('controller-host-name', None)
-    controller_port = os.getenv('controller-port', None)
-    controller_ssl = os.getenv('ssl_enabled', None)
+    controller_host = os.getenv('APPD_MA_HOST_NAME')
+    controller_port = os.getenv('APPD_MA_PORT')
+    controller_ssl = os.getenv('APPD_MA_SSL_ENABLED')
     app_config.controller_url = app_config.get_controller_url(controller_host, controller_port, controller_ssl)
     logger.debug('controller url: ' + app_config.controller_url)    
-    app_config.account_name = os.getenv('account-name', 'customer1')    
-    app_config.user_name = os.getenv('user-name', None)
-    app_config.user_pass = os.getenv('user-password', None)       
-    app_config.app = os.getenv('application-name', None)          
-    app_config.tier = os.getenv('tier-name', None)
+    app_config.account_name = os.getenv('APPD_MA_ACCOUNT_NAME', 'customer1')
+    app_config.user_name = os.getenv('APPD_MA_USER_NAME')
+    app_config.user_pass = os.getenv('APPD_MA_USER_PASS')
+    app_config.app = os.getenv('APPD_NOZZLE_APP_NAME')
+    app_config.tier = os.getenv('APPD_NOZZLE_TIER_NAME')
 
 def parse_args():
     parser = argparse.ArgumentParser()
