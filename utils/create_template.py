@@ -1,18 +1,6 @@
 import argparse
 import json
 
-#example template mapping file contents (first line: replace "Tier_system_adpcf18_com" with "${TIER_NAME}") 
-# [
-#     ["Tier_system_adpcf18_com", "${TIER_NAME}"],
-#     ["diego_cell|073c50d0-3dad-48eb-a1e0-3c495c1115d2|10.206.0.41", "diego_cell|${DIEGO_CELL_0_GUID}|{DIEGO_CELL_0_IP_0}"],
-#     ["diego_cell|27ea918f-9198-40ee-b262-0df5a57671fb|10.206.0.42", "diego_cell|${DIEGO_CELL_1_GUID}|{DIEGO_CELL_1_IP_0}"],
-#     ["diego_cell|760c2862-b5c0-4e78-aa76-d365ced1f150|10.206.0.40", "diego_cell|${DIEGO_CELL_2_GUID}|{DIEGO_CELL_2_IP_0}"],
-#     ["diego_brain|55a231ab-eebb-4c86-b964-79316e9a75d0|10.206.0.39", "diego_brain|${DIEGO_BRAIN_GUID}|${DIEGO_BRAIN_IP}"],
-#     ["router|4079754e-cb02-4396-9f09-2088612813b7|10.206.0.3", "router|${ROUTER_GUID}|${ROUTER_IP}"],
-#     ["diego_database|d234e2f3-f136-460a-a4eb-bc1cde38b46f|10.206.0.38", "diego_database|${DIEGO_DATABASE_GUID}|${DIEGO_DATABASE_IP}"],
-#     ["CF|cf-16dbe69b77fa027ffdb4", "CF|${RESOURCES_PARENT_FOLDER}"]
-# ]
-
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("-source_file", help='file to create template from', required=True)

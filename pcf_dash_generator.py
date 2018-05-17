@@ -22,11 +22,11 @@ commandline = False
 #todo
 #flask/REST endpoints
 #    1. publish dashboard based on template on file system, 
-#             optionally supply new settings
 #             optionally supply overwrite flag
 #    2. publish with retry and delay for initial tile deployment use case
-#    3. get logs
+#    3. get generated dashboard w/o publishing
 #    4. get default settings
+#    5. get recent status
 #exceptions, mapping to http error codes
 
 def parse_env():
@@ -46,11 +46,12 @@ def parse_args():
     parser.add_argument('--controller_host', help='the controller host', default=None)
     parser.add_argument('--controller_port', help='the controller port', default=None)
     parser.add_argument('--controller_ssl', help='True if ssl is enabled', default=False)
-    parser.add_argument('--account_name', help='the controller account name', default='customer1')    
+    parser.add_argument('--account_name', help='the controller account name', default='customer1')
     parser.add_argument('--user_name', help='the controller username', default=None)
     parser.add_argument('--user_pass', help='the controller user password', default=None)       
-    parser.add_argument('--app', help='the Appd app where PCF metrics are published by the PCF tile', default=None)            
-    parser.add_argument('--tier', help='the Appd tier where PCF metrics are published by the PCF tile', default=None)            
+    parser.add_argument('--app', help='the Appd app where PCF metrics are published by the PCF tile and where dashboard and health rules will be generated', default=None)            
+    parser.add_argument('--tier', help='the Appd tier where PCF metrics are published by the PCF tile', default=None)
+    parser.add_argument('--tier_id', help='the tier component id used in metric path as COMPONENT:<id>', default=None)
     parser.add_argument('--start_service', help='start the rest API service', action='store_true', default=False)
     parser.add_argument('--service_port', help='override the default port 8080 for the service', type=int, default=8080)
     parser.add_argument("--overwrite_hrs", help='set to true to overwrite existing health rules with the same name in the target controller', 
@@ -64,12 +65,13 @@ def parse_args():
     app_config.user_pass = args.user_pass    
     app_config.app = args.app
     app_config.tier = args.tier
+    app_config.tier_id = args.tier_id    
     app_config.overwrite_hrs = args.overwrite_hrs
     app_config.start_service = args.start_service
     app_config.service_port = args.service_port
     
-def get_resources_parent_folder():
-    metric_path_root = 'Application Infrastructure Performance|' + app_config.tier + '|Custom Metrics|CF'
+def get_system_metrics_parent_folder():
+    metric_path_root = 'Application Infrastructure Performance|' + app_config.tier + '|Custom Metrics|PCF Firehose|SERVER25|System (BOSH) Metrics|bosh-system-metrics-forwarder'
     query_prams='?output=json&metric-path=' + metric_path_root
     url = app_config.controller_url + '/controller/rest/applications/' + app_config.app + '/metrics' + query_prams
     logger.debug('url: ' + url)    
@@ -91,18 +93,22 @@ def get_resources_parent_folder():
         raise RuntimeError("unable to locate resource metrics parent folder using url: " + url)
     return resource_parent_folder
     
-def get_pcf_services():
+def get_pcf_services(system_metrics_parent_folder):
     logger.info('getting pcf service details from controller')
-    metric_path_root = 'Application Infrastructure Performance|' + app_config.tier + '|Custom Metrics|CF|cf'    
+
+    metric_path_root = 'Application Infrastructure Performance|' + app_config.tier + '|Custom Metrics|PCF Firehose|SERVER25|System (BOSH) Metrics|bosh-system-metrics-forwarder|' + system_metrics_parent_folder    
+
     query_prams='?output=json&metric-path=' + metric_path_root
     url = app_config.controller_url + '/controller/rest/applications/' + app_config.app + '/metrics' + query_prams
     logger.debug('url: ' + url)    
     response = requests.get(url, auth=(app_config.get_full_user_name(), app_config.user_pass))
     response.raise_for_status();
-    logger.debug('response: + ' + str(response.json())) 
+    logger.debug('response: + ' + str(response.json()))
+    if len(response.json()) == 0:   
+        raise RuntimeError("unable to get list of pcf services using url: " + url)
+    pcf_services = {}
     pcf_service_list = response.json()
     
-    pcf_services = {}
     for pcf_service in pcf_service_list:
         service_name = pcf_service['name']
         logger.debug('service: ' + service_name)
@@ -118,55 +124,55 @@ def get_pcf_services():
         for i, service_instance in enumerate(service_instances):
             logger.debug('service instance: ' + str(service_instance))
             guid = service_instance['name']
-            pcf_services[service_name][i] = {'guid' : guid, 'ips' : []}
-            guid_url = service_url + '|' + guid
-            logger.debug('guid_url: ' + guid_url)
-            response = requests.get(guid_url, auth=(app_config.get_full_user_name(), app_config.user_pass))
-            response.raise_for_status();
-            ips = response.json()
-            logger.debug('ips: ' + str(ips))
-            pcf_services[service_name][i]['ips'] = [None] * len(ips)
-            for j, ip in enumerate(ips):
-                 #pcf_services[service_name][i] = {'guid' : guid, 'ips' : []}
-                 logger.debug('ip: ' + ip['name'])
-                 pcf_services[service_name][i]['ips'][j] = ip['name']
+            pcf_services[service_name][i] = {'guid' : guid}
     return pcf_services
 
-def generate_dashboard(pcf_services, resources_parent_folder, app, tier):
+def generate_dashboard(pcf_services, system_metrics_parent_folder, app, tier):
     logger.info('generating dashboard from template')
     with open(pcf_dash_template_file, 'r', encoding='utf-8') as myfile:
         dash_template=myfile.read()
     dash_template = Template(dash_template)
-    generated = dash_template.substitute(APP_NAME=app,
-                                 TIER_NAME=tier, 
+    generated = dash_template.substitute(APPLICATION_NAME=app,
+                                 TIER_NAME=tier,
+                                 SERVER_NAME='SERVER25',
+                                 SYSTEM_METRICS_PARENT_FOLDER=system_metrics_parent_folder,
                                  DIEGO_CELL_0_GUID=pcf_services['diego_cell'][0]['guid'], 
-                                 DIEGO_CELL_0_IP_0=pcf_services['diego_cell'][0]['ips'][0],
                                  DIEGO_CELL_1_GUID=pcf_services['diego_cell'][1]['guid'], 
-                                 DIEGO_CELL_1_IP_0=pcf_services['diego_cell'][1]['ips'][0],
                                  DIEGO_CELL_2_GUID=pcf_services['diego_cell'][2]['guid'], 
-                                 DIEGO_CELL_2_IP_0=pcf_services['diego_cell'][2]['ips'][0],
-                                 RESOURCES_PARENT_FOLDER=resources_parent_folder)
+                                 ROUTER_0_GUID=pcf_services['router'][0]['guid'],
+                                 UAA_0_GUID=pcf_services['uaa'][0]['guid'])
+                                 
     return generated
 
-def generate_healthrules(pcf_services, resources_parent_folder, app, tier):
+def generate_healthrules(pcf_services, system_metrics_parent_folder, app, tier, tier_id):
     logger.info('generating health rules from template')    
     with open(pcf_hrs_template_file, 'r', encoding='utf-8') as myfile:
         hr_template=myfile.read()
     hr_template = Template(hr_template)
-    generated = hr_template.substitute(TIER_NAME=tier, 
-                                       DIEGO_CELL_0_GUID=pcf_services['diego_cell'][0]['guid'], 
-                                       DIEGO_CELL_0_IP_0=pcf_services['diego_cell'][0]['ips'][0],
-                                       DIEGO_CELL_1_GUID=pcf_services['diego_cell'][1]['guid'], 
-                                       DIEGO_CELL_1_IP_0=pcf_services['diego_cell'][1]['ips'][0],
-                                       DIEGO_CELL_2_GUID=pcf_services['diego_cell'][2]['guid'], 
-                                       DIEGO_CELL_2_IP_0=pcf_services['diego_cell'][2]['ips'][0],
-                                       DIEGO_BRAIN_GUID=pcf_services['diego_brain'][0]['guid'], 
-                                       DIEGO_BRAIN_IP=pcf_services['diego_brain'][0]['ips'][0],
-                                       ROUTER_GUID=pcf_services['router'][0]['guid'], 
-                                       ROUTER_IP=pcf_services['router'][0]['ips'][0],
-                                       DIEGO_DATABASE_GUID=pcf_services['diego_database'][0]['guid'], 
-                                       DIEGO_DATABASE_IP=pcf_services['diego_database'][0]['ips'][0],
-                                       RESOURCES_PARENT_FOLDER=resources_parent_folder)
+    generated = hr_template.substitute(TIER_NAME=tier,
+                                       TIER_ID=tier_id,
+                                       SERVER_NAME='SERVER25',
+                                       SYSTEM_METRICS_PARENT_FOLDER=system_metrics_parent_folder,
+                                       CLOCK_GLOBAL_0_GUID=pcf_services['clock_global'][0]['guid'],
+                                       CLOUD_CONTROLLER_0_GUID=pcf_services['cloud_controller'][0]['guid'],
+                                       CLOUD_CONTROLLER_WORKER_0_GUID=pcf_services['cloud_controller_worker'][0]['guid'],
+                                       CONSUL_SERVER_0_GUID=pcf_services['consul_server'][0]['guid'],
+                                       CREDHUB_0_GUID=pcf_services['credhub'][0]['guid'],
+                                       DIEGO_BRAIN_0_GUID=pcf_services['diego_brain'][0]['guid'],
+                                       DIEGO_CELL_0_GUID=pcf_services['diego_cell'][0]['guid'],
+                                       DIEGO_CELL_1_GUID=pcf_services['diego_cell'][1]['guid'],
+                                       DIEGO_CELL_2_GUID=pcf_services['diego_cell'][2]['guid'],
+                                       DIEGO_DATABASE_0_GUID=pcf_services['diego_database'][0]['guid'],
+                                       DOPPLER_0_GUID=pcf_services['doppler'][0]['guid'],
+                                       LOGGREGATOR_TRAFFICCONTROLLER_0_GUID=pcf_services['loggregator_trafficcontroller'][0]['guid'],
+                                       MYSQL_0_GUID=pcf_services['mysql'][0]['guid'],
+                                       MYSQL_PROXY_0_GUID=pcf_services['mysql_proxy'][0]['guid'],
+                                       NATS_0_GUID=pcf_services['nats'][0]['guid'],
+                                       ROUTER_0_GUID=pcf_services['router'][0]['guid'],
+                                       SYSLOG_ADAPTER_0_GUID=pcf_services['syslog_adapter'][0]['guid'],
+                                       SYSLOG_SCHEDULER_0_GUID=pcf_services['syslog_scheduler'][0]['guid'],
+                                       TCP_ROUTER_0_GUID=pcf_services['tcp_router'][0]['guid'],                                       
+                                       UAA_0_GUID=pcf_services['uaa'][0]['guid'])
     return generated
 
 def upload_healthrules(healthrules_xml):
@@ -189,12 +195,14 @@ def upload_dashboard(dashboard_json):
 
 def publish_dashboard_and_hrs():
     logger.info('publishing pcf dashboards and hrs')
-    pcf_services = get_pcf_services()
-    resources_parent_folder = get_resources_parent_folder()
-    logger.debug('pcf_services: ' + str(pcf_services))
-    logger.debug('resources_parent_folder: ' + str(resources_parent_folder))
-    dashboard = generate_dashboard(pcf_services, resources_parent_folder, app_config.app, app_config.tier)
-    healthrules = generate_healthrules(pcf_services, resources_parent_folder, app_config.app, app_config.tier)
+    system_metrics_parent_folder = get_system_metrics_parent_folder()
+    logger.debug('system_metrics_parent_folder: ' + str(system_metrics_parent_folder))
+
+    pcf_services = get_pcf_services(system_metrics_parent_folder)
+    logger.debug('pcf_services: ' + str(pcf_services))    
+    
+    dashboard = generate_dashboard(pcf_services, system_metrics_parent_folder, app_config.app, app_config.tier)
+    healthrules = generate_healthrules(pcf_services, system_metrics_parent_folder, app_config.app, app_config.tier, app_config.tier_id)
     if commandline and not app_config.start_service:
         logger.info('writing generated dashboard and hrs to file system')
         with open(pcf_dash_generated_file, 'w', encoding='utf-8') as myfile:
