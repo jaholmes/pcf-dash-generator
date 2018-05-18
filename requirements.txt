@@ -15,3 +15,5 @@ jmespath==0.9.3
 setuptools==39.0.1
 toml==0.9.4
 urllib3==1.22
+six==1.11.0
+tenacity==4.12.0

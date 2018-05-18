@@ -1,5 +1,5 @@
 #!flask/bin/python
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, Response
 from string import Template
 import os
 import argparse
@@ -8,12 +8,18 @@ import re
 import logging
 from logging.config import fileConfig
 import app_config
+from requests.exceptions import HTTPError
+from tenacity import *
 
 pcf_dash_template_file = 'templates/pcf_dashboard_template_v1.json'
 pcf_dash_generated_file = 'generated/pcf_dashboard_generated.json'
 pcf_hrs_template_file = 'templates/pcf_healthrules_template_v1.xml'
 pcf_hrs_generated_file = 'generated/pcf_healthrules_generated.xml'
+#dashboard_name should match name used in dashboard template; 
+#otherwise check for existing dashboard will fail -- dashboard_already_exists()
 dashboard_name = '${APPLICATION_NAME}-${TIER_NAME}-PCF KPI Dashboard'
+publish_max_retries = 10
+publish_max_retry_delay_seconds = 60 
 
 fileConfig('logging_config.ini')
 logger = logging.getLogger()
@@ -21,13 +27,10 @@ service = Flask(__name__)
 
 #todo
 #flask/REST endpoints
-#    1. publish dashboard based on template on file system, 
-#             optionally supply overwrite flag
-#    2. publish with retry and delay for initial tile deployment use case
 #    3. get generated dashboard w/o publishing
 #    4. get default settings
 #    5. get recent status
-#exceptions, mapping to http error codes
+#unexpected exceptions, mapping to http error codes
 
 def parse_env():
     controller_host = os.getenv('APPD_MA_HOST_NAME')
@@ -196,6 +199,35 @@ def dashboard_already_exists():
             return True
     return False
 
+def return_last_value(last_attempt):
+    return last_attempt.result()
+def is_false(value):
+    return value is False
+
+@retry(wait=wait_exponential(max=publish_max_retry_delay_seconds),
+       stop=stop_after_attempt(publish_max_retries),
+       retry=retry_if_result(is_false),
+       retry_error_callback=return_last_value) 
+def pcf_metric_path_exists_with_retry():
+    return pcf_metric_path_exists()
+    
+def pcf_metric_path_exists():
+    metric_path_root = 'Application Infrastructure Performance|' + app_config.tier + '|Custom Metrics|PCF Firehose|SERVER25|System (BOSH) Metrics|bosh-system-metrics-forwarder'
+    query_prams='?output=json&metric-path=' + metric_path_root
+    url = app_config.controller_url + '/controller/rest/applications/' + app_config.app + '/metrics' + query_prams
+    logger.debug('url: ' + url)    
+    try:
+        response = requests.get(url, auth=(app_config.get_full_user_name(), app_config.user_pass))
+        response.raise_for_status()
+    except HTTPError as err:
+        if err.response.status_code == 400 and 'invalid application' in err.response.reason.lower():
+            logger.debug('application \'%s\' doesn\'t exist', app_config.app)
+            return False
+    logger.debug('response: ' + str(response.json()))
+    if len(response.json()) == 0:
+        return False   
+    return True
+    
 def upload_healthrules(healthrules_xml, overwrite):
     logger.info('uploading health rules to controller (overwrite=(' + str(app_config.overwrite) + '))')    
     url = app_config.controller_url + '/controller/healthrules/' + app_config.app
@@ -221,10 +253,8 @@ def publish_dashboard_and_hrs(overwrite):
     logger.info('publishing pcf dashboards and hrs')
     system_metrics_parent_folder = get_system_metrics_parent_folder()
     logger.debug('system_metrics_parent_folder: ' + str(system_metrics_parent_folder))
-
     pcf_services = get_pcf_services(system_metrics_parent_folder)
     logger.debug('pcf_services: ' + str(pcf_services))    
-    
     dashboard = generate_dashboard(pcf_services, system_metrics_parent_folder, app_config.app, app_config.tier)
     healthrules = generate_healthrules(pcf_services, system_metrics_parent_folder, app_config.app, app_config.tier, app_config.tier_id)
     if app_config.commandline and not app_config.start_service:
@@ -243,12 +273,20 @@ def start_flask():
 
 @service.route('/pcf-dash/publish', methods=['POST'])
 def publish():
-    #todo content = request.json
-    #logger.debug('content: ' + str(content))
-    overwrite = request.args.get('overwrite') is not None and request.args.get('overwrite').lower() == 'true' 
+    logger.info('request received: publish')    
+    overwrite = request.args.get('overwrite') is not None and request.args.get('overwrite').lower() == 'true'
+    retry = request.args.get('retry') is not None and request.args.get('retry').lower() == 'true'
+    if retry:
+        metric_path_exists = pcf_metric_path_exists_with_retry()
+    else:     
+        metric_path_exists = pcf_metric_path_exists()        
+    if not metric_path_exists:
+        msg = 'failed to find PCF metric paths in target controller required to publish dashboard, giving up'        
+        logger.error(msg)
+        return Response(msg, 404)
     publish_dashboard_and_hrs(overwrite)
     return 'done'
-        
+
 def start_app_commandline():
     app_config.commandline = True
     parse_args()
@@ -256,6 +294,9 @@ def start_app_commandline():
         logger.info('starting service')
         start_flask()
     else:
+        if not pcf_metric_path_exists():
+            logger.error('failed to find PCF metric paths in target controller required to publish dashboard, giving up')
+            return
         publish_dashboard_and_hrs(app_config.overwrite)
 
 def start_app_pcf():
