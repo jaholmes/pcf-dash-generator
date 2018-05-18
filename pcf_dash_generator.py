@@ -40,6 +40,7 @@ def parse_env():
     app_config.user_pass = os.getenv('APPD_MA_USER_PASS')
     app_config.app = os.getenv('APPD_NOZZLE_APP_NAME')
     app_config.tier = os.getenv('APPD_NOZZLE_TIER_NAME')
+    app_config.tier_id = os.getenv('APPD_NOZZLE_TIER_ID')    
 
 def parse_args():
     parser = argparse.ArgumentParser()

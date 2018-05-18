@@ -8891,6 +8891,43 @@
                     "metricType": "OTHER",
                     "showRawMetricName": false,
                     "colorPalette": null,
+                    "name": "Series 3",
+                    "metricMatchCriteriaTemplate": {
+                        "entityMatchCriteria": null,
+                        "metricExpressionTemplate": {
+                            "metricExpressionType": "Absolute",
+                            "functionType": "VALUE",
+                            "displayName": "null",
+                            "inputMetricText": false,
+                            "inputMetricPath": null,
+                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_1_GUID}|192.168.16.37|rep.CapacityRemainingMemory",
+                            "scopeEntity": {
+                                "applicationName": "${APPLICATION_NAME}",
+                                "entityType": "APPLICATION_COMPONENT",
+                                "entityName": "${TIER_NAME}",
+                                "scopingEntityType": null,
+                                "scopingEntityName": null,
+                                "subtype": null
+                            }
+                        },
+                        "rollupMetricData": false,
+                        "expressionString": "",
+                        "useActiveBaseline": false,
+                        "sortResultsAscending": false,
+                        "maxResults": 20,
+                        "evaluationScopeType": null,
+                        "baselineName": null,
+                        "applicationName": "${APPLICATION_NAME}",
+                        "metricDisplayNameStyle": "DISPLAY_STYLE_AUTO",
+                        "metricDisplayNameCustomFormat": null
+                    },
+                    "axisPosition": null
+                },
+                {
+                    "seriesType": "AREA",
+                    "metricType": "OTHER",
+                    "showRawMetricName": false,
+                    "colorPalette": null,
                     "name": "Series 2",
                     "metricMatchCriteriaTemplate": {
                         "entityMatchCriteria": null,
@@ -8959,43 +8996,6 @@
                         "metricDisplayNameCustomFormat": null
                     },
                     "axisPosition": "LEFT"
-                },
-                {
-                    "seriesType": "AREA",
-                    "metricType": "OTHER",
-                    "showRawMetricName": false,
-                    "colorPalette": null,
-                    "name": "Series 3",
-                    "metricMatchCriteriaTemplate": {
-                        "entityMatchCriteria": null,
-                        "metricExpressionTemplate": {
-                            "metricExpressionType": "Absolute",
-                            "functionType": "VALUE",
-                            "displayName": "null",
-                            "inputMetricText": false,
-                            "inputMetricPath": null,
-                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_1_GUID}|192.168.16.37|rep.CapacityRemainingMemory",
-                            "scopeEntity": {
-                                "applicationName": "${APPLICATION_NAME}",
-                                "entityType": "APPLICATION_COMPONENT",
-                                "entityName": "${TIER_NAME}",
-                                "scopingEntityType": null,
-                                "scopingEntityName": null,
-                                "subtype": null
-                            }
-                        },
-                        "rollupMetricData": false,
-                        "expressionString": "",
-                        "useActiveBaseline": false,
-                        "sortResultsAscending": false,
-                        "maxResults": 20,
-                        "evaluationScopeType": null,
-                        "baselineName": null,
-                        "applicationName": "${APPLICATION_NAME}",
-                        "metricDisplayNameStyle": "DISPLAY_STYLE_AUTO",
-                        "metricDisplayNameCustomFormat": null
-                    },
-                    "axisPosition": null
                 }
             ],
             "verticalAxisLabel": null,
@@ -9189,6 +9189,43 @@
                     "metricType": "OTHER",
                     "showRawMetricName": false,
                     "colorPalette": null,
+                    "name": "Series 3",
+                    "metricMatchCriteriaTemplate": {
+                        "entityMatchCriteria": null,
+                        "metricExpressionTemplate": {
+                            "metricExpressionType": "Absolute",
+                            "functionType": "VALUE",
+                            "displayName": "null",
+                            "inputMetricText": false,
+                            "inputMetricPath": null,
+                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_1_GUID}|192.168.16.37|rep.CapacityRemainingDisk",
+                            "scopeEntity": {
+                                "applicationName": "${APPLICATION_NAME}",
+                                "entityType": "APPLICATION_COMPONENT",
+                                "entityName": "${TIER_NAME}",
+                                "scopingEntityType": null,
+                                "scopingEntityName": null,
+                                "subtype": null
+                            }
+                        },
+                        "rollupMetricData": false,
+                        "expressionString": "",
+                        "useActiveBaseline": false,
+                        "sortResultsAscending": false,
+                        "maxResults": 20,
+                        "evaluationScopeType": null,
+                        "baselineName": null,
+                        "applicationName": "${APPLICATION_NAME}",
+                        "metricDisplayNameStyle": "DISPLAY_STYLE_AUTO",
+                        "metricDisplayNameCustomFormat": null
+                    },
+                    "axisPosition": null
+                },
+                {
+                    "seriesType": "AREA",
+                    "metricType": "OTHER",
+                    "showRawMetricName": false,
+                    "colorPalette": null,
                     "name": "Series 2",
                     "metricMatchCriteriaTemplate": {
                         "entityMatchCriteria": null,
@@ -9257,43 +9294,6 @@
                         "metricDisplayNameCustomFormat": null
                     },
                     "axisPosition": "LEFT"
-                },
-                {
-                    "seriesType": "AREA",
-                    "metricType": "OTHER",
-                    "showRawMetricName": false,
-                    "colorPalette": null,
-                    "name": "Series 3",
-                    "metricMatchCriteriaTemplate": {
-                        "entityMatchCriteria": null,
-                        "metricExpressionTemplate": {
-                            "metricExpressionType": "Absolute",
-                            "functionType": "VALUE",
-                            "displayName": "null",
-                            "inputMetricText": false,
-                            "inputMetricPath": null,
-                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_1_GUID}|192.168.16.37|rep.CapacityRemainingDisk",
-                            "scopeEntity": {
-                                "applicationName": "${APPLICATION_NAME}",
-                                "entityType": "APPLICATION_COMPONENT",
-                                "entityName": "${TIER_NAME}",
-                                "scopingEntityType": null,
-                                "scopingEntityName": null,
-                                "subtype": null
-                            }
-                        },
-                        "rollupMetricData": false,
-                        "expressionString": "",
-                        "useActiveBaseline": false,
-                        "sortResultsAscending": false,
-                        "maxResults": 20,
-                        "evaluationScopeType": null,
-                        "baselineName": null,
-                        "applicationName": "${APPLICATION_NAME}",
-                        "metricDisplayNameStyle": "DISPLAY_STYLE_AUTO",
-                        "metricDisplayNameCustomFormat": null
-                    },
-                    "axisPosition": null
                 }
             ],
             "verticalAxisLabel": null,
@@ -9350,6 +9350,43 @@
             "isGlobal": true,
             "propertiesMap": null,
             "dataSeriesTemplates": [
+                {
+                    "seriesType": "AREA",
+                    "metricType": "OTHER",
+                    "showRawMetricName": false,
+                    "colorPalette": null,
+                    "name": "Series 3",
+                    "metricMatchCriteriaTemplate": {
+                        "entityMatchCriteria": null,
+                        "metricExpressionTemplate": {
+                            "metricExpressionType": "Absolute",
+                            "functionType": "VALUE",
+                            "displayName": "null",
+                            "inputMetricText": false,
+                            "inputMetricPath": null,
+                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_1_GUID}|192.168.16.37|rep.CapacityRemainingContainers",
+                            "scopeEntity": {
+                                "applicationName": "${APPLICATION_NAME}",
+                                "entityType": "APPLICATION_COMPONENT",
+                                "entityName": "${TIER_NAME}",
+                                "scopingEntityType": null,
+                                "scopingEntityName": null,
+                                "subtype": null
+                            }
+                        },
+                        "rollupMetricData": false,
+                        "expressionString": "",
+                        "useActiveBaseline": false,
+                        "sortResultsAscending": false,
+                        "maxResults": 20,
+                        "evaluationScopeType": null,
+                        "baselineName": null,
+                        "applicationName": "${APPLICATION_NAME}",
+                        "metricDisplayNameStyle": "DISPLAY_STYLE_AUTO",
+                        "metricDisplayNameCustomFormat": null
+                    },
+                    "axisPosition": null
+                },
                 {
                     "seriesType": "AREA",
                     "metricType": "OTHER",
@@ -9423,43 +9460,6 @@
                         "metricDisplayNameCustomFormat": null
                     },
                     "axisPosition": "LEFT"
-                },
-                {
-                    "seriesType": "AREA",
-                    "metricType": "OTHER",
-                    "showRawMetricName": false,
-                    "colorPalette": null,
-                    "name": "Series 3",
-                    "metricMatchCriteriaTemplate": {
-                        "entityMatchCriteria": null,
-                        "metricExpressionTemplate": {
-                            "metricExpressionType": "Absolute",
-                            "functionType": "VALUE",
-                            "displayName": "null",
-                            "inputMetricText": false,
-                            "inputMetricPath": null,
-                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_1_GUID}|192.168.16.37|rep.CapacityRemainingContainers",
-                            "scopeEntity": {
-                                "applicationName": "${APPLICATION_NAME}",
-                                "entityType": "APPLICATION_COMPONENT",
-                                "entityName": "${TIER_NAME}",
-                                "scopingEntityType": null,
-                                "scopingEntityName": null,
-                                "subtype": null
-                            }
-                        },
-                        "rollupMetricData": false,
-                        "expressionString": "",
-                        "useActiveBaseline": false,
-                        "sortResultsAscending": false,
-                        "maxResults": 20,
-                        "evaluationScopeType": null,
-                        "baselineName": null,
-                        "applicationName": "${APPLICATION_NAME}",
-                        "metricDisplayNameStyle": "DISPLAY_STYLE_AUTO",
-                        "metricDisplayNameCustomFormat": null
-                    },
-                    "axisPosition": null
                 }
             ],
             "verticalAxisLabel": null,
@@ -11223,7 +11223,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Clock Global VM System Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -11363,7 +11363,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Clock Global VM Health",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -11433,7 +11433,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Clock Global VM CPU Utilization",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -11503,7 +11503,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Clock Global VM Memory Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -11643,7 +11643,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Loggregator Trafficcontroller VM Health",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -11713,7 +11713,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Loggregator Trafficcontroller VM System Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -11783,7 +11783,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Cloud Controller VM Health",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -11853,7 +11853,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Cloud Controller VM CPU Utilization",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -11923,7 +11923,77 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Cloud Controller VM Memory Used",
+                    "scopingEntityType": null,
+                    "scopingEntityName": null,
+                    "subtype": null
+                }
+            ],
+            "entityType": "POLICY",
+            "entitySelectionType": "SPECIFIED",
+            "iconSize": 18,
+            "iconPosition": "LEFT",
+            "showSearchBox": false,
+            "showList": false,
+            "showListHeader": false,
+            "showBarPie": false,
+            "showPie": true,
+            "innerRadius": 0,
+            "aggregationType": "RATIO"
+        },
+        {
+            "widgetType": "HealthListWidget",
+            "title": null,
+            "height": 20,
+            "width": 20,
+            "minHeight": 0,
+            "minWidth": 0,
+            "x": 444,
+            "y": 983,
+            "label": null,
+            "description": null,
+            "drillDownUrl": null,
+            "useMetricBrowserAsDrillDown": false,
+            "drillDownActionType": null,
+            "backgroundColor": 16777215,
+            "backgroundColors": null,
+            "backgroundColorsStr": "16777215,16777215",
+            "color": 4210752,
+            "fontSize": 12,
+            "useAutomaticFontSize": false,
+            "borderEnabled": false,
+            "borderThickness": 0,
+            "borderColor": 14408667,
+            "backgroundAlpha": 0,
+            "showValues": false,
+            "formatNumber": null,
+            "numDecimals": 0,
+            "removeZeros": null,
+            "compactMode": false,
+            "showTimeRange": false,
+            "renderIn3D": false,
+            "showLegend": null,
+            "legendPosition": null,
+            "legendColumnCount": null,
+            "startTime": null,
+            "endTime": null,
+            "minutesBeforeAnchorTime": 15,
+            "isGlobal": true,
+            "propertiesMap": null,
+            "dataSeriesTemplates": null,
+            "applicationReference": {
+                "applicationName": "${APPLICATION_NAME}",
+                "entityType": "APPLICATION",
+                "entityName": "${APPLICATION_NAME}",
+                "scopingEntityType": null,
+                "scopingEntityName": null,
+                "subtype": null
+            },
+            "entityReferences": [
+                {
+                    "applicationName": "${APPLICATION_NAME}",
+                    "entityType": "POLICY",
+                    "entityName": "${TIER_NAME}-MySql Proxy VM Health",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -11949,7 +12019,7 @@
             "minHeight": 0,
             "minWidth": 0,
             "x": 443,
-            "y": 982,
+            "y": 1031,
             "label": null,
             "description": null,
             "drillDownUrl": null,
@@ -11993,7 +12063,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-MySql Proxy VM CPU Utilization",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -12018,8 +12088,8 @@
             "width": 20,
             "minHeight": 0,
             "minWidth": 0,
-            "x": 441,
-            "y": 1035,
+            "x": 444,
+            "y": 1007,
             "label": null,
             "description": null,
             "drillDownUrl": null,
@@ -12063,77 +12133,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
-                    "scopingEntityType": null,
-                    "scopingEntityName": null,
-                    "subtype": null
-                }
-            ],
-            "entityType": "POLICY",
-            "entitySelectionType": "SPECIFIED",
-            "iconSize": 18,
-            "iconPosition": "LEFT",
-            "showSearchBox": false,
-            "showList": false,
-            "showListHeader": false,
-            "showBarPie": false,
-            "showPie": true,
-            "innerRadius": 0,
-            "aggregationType": "RATIO"
-        },
-        {
-            "widgetType": "HealthListWidget",
-            "title": null,
-            "height": 20,
-            "width": 20,
-            "minHeight": 0,
-            "minWidth": 0,
-            "x": 443,
-            "y": 1011,
-            "label": null,
-            "description": null,
-            "drillDownUrl": null,
-            "useMetricBrowserAsDrillDown": false,
-            "drillDownActionType": null,
-            "backgroundColor": 16777215,
-            "backgroundColors": null,
-            "backgroundColorsStr": "16777215,16777215",
-            "color": 4210752,
-            "fontSize": 12,
-            "useAutomaticFontSize": false,
-            "borderEnabled": false,
-            "borderThickness": 0,
-            "borderColor": 14408667,
-            "backgroundAlpha": 0,
-            "showValues": false,
-            "formatNumber": null,
-            "numDecimals": 0,
-            "removeZeros": null,
-            "compactMode": false,
-            "showTimeRange": false,
-            "renderIn3D": false,
-            "showLegend": null,
-            "legendPosition": null,
-            "legendColumnCount": null,
-            "startTime": null,
-            "endTime": null,
-            "minutesBeforeAnchorTime": 15,
-            "isGlobal": true,
-            "propertiesMap": null,
-            "dataSeriesTemplates": null,
-            "applicationReference": {
-                "applicationName": "${APPLICATION_NAME}",
-                "entityType": "APPLICATION",
-                "entityName": "${APPLICATION_NAME}",
-                "scopingEntityType": null,
-                "scopingEntityName": null,
-                "subtype": null
-            },
-            "entityReferences": [
-                {
-                    "applicationName": "${APPLICATION_NAME}",
-                    "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-MySql Proxy VM Memory Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -12203,7 +12203,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Cloud Controller VM System Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -12273,7 +12273,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Cloud Controller VM Ephemeral Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -12343,7 +12343,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Cloud Controller Worker VM System Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -12413,7 +12413,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Cloud Controller Worker VM Ephemeral Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -12438,8 +12438,8 @@
             "width": 20,
             "minHeight": 0,
             "minWidth": 0,
-            "x": 967,
-            "y": 857,
+            "x": 968,
+            "y": 858,
             "label": null,
             "description": null,
             "drillDownUrl": null,
@@ -12483,7 +12483,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Credhub VM System Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -12553,7 +12553,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Credhub VM Ephemeral Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -12623,7 +12623,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Diego Brain VM System Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -12693,7 +12693,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Diego Brain VM Ephemeral Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -12763,7 +12763,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-MySql VM Health",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -12788,7 +12788,7 @@
             "width": 20,
             "minHeight": 0,
             "minWidth": 0,
-            "x": 226,
+            "x": 225,
             "y": 1028,
             "label": null,
             "description": null,
@@ -12833,7 +12833,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-MySql VM CPU Utilization",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -12903,7 +12903,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-MySql VM Memory Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -12973,7 +12973,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Cloud Controller Worker VM Health",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -13043,7 +13043,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Cloud Controller Worker VM CPU Utilization",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -13113,7 +13113,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Cloud Controller Worker VM Memory Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -13183,7 +13183,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Consul Server VM CPU Utilization",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -13253,7 +13253,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Consul Server VM Memory Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -13323,7 +13323,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Consul Server VM Health",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -13393,7 +13393,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Nats VM Health",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -13463,7 +13463,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Nats VM Memory Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -13533,7 +13533,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Nats VM CPU Utilization",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -13603,7 +13603,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Nats VM System Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -13673,7 +13673,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Nats VM Ephemeral Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -13743,7 +13743,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Consul Server VM System Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -13813,7 +13813,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Consul Server VM Ephemeral Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -13883,7 +13883,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Consul Server VM Persistent Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -13953,7 +13953,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-MySql Proxy VM System Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -14023,7 +14023,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-MySql Proxy VM Ephemeral Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -14093,7 +14093,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Credhub VM Health",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -14163,7 +14163,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Credhub VM Memory Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -14233,7 +14233,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Syslog Scheduler VM Health",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -14303,7 +14303,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Router VM Health",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -14373,7 +14373,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Router VM Memory Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -14443,7 +14443,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Router VM CPU Utilization",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -14469,7 +14469,7 @@
             "minHeight": 0,
             "minWidth": 0,
             "x": 959,
-            "y": 982,
+            "y": 983,
             "label": null,
             "description": null,
             "drillDownUrl": null,
@@ -14513,7 +14513,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Router VM System Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -14538,8 +14538,8 @@
             "width": 20,
             "minHeight": 0,
             "minWidth": 0,
-            "x": 960,
-            "y": 1007,
+            "x": 959,
+            "y": 1009,
             "label": null,
             "description": null,
             "drillDownUrl": null,
@@ -14583,7 +14583,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Router VM Ephemeral Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -14653,7 +14653,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Diego Brain VM Health",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -14723,7 +14723,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Diego Brain VM Memory Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -14863,7 +14863,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Syslog Adapter VM Health",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -14933,7 +14933,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Syslog Adapter VM Memory Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -15003,7 +15003,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Syslog Adapter VM CPU Utilization",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -15073,7 +15073,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Syslog Adapter VM System Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -15143,7 +15143,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Syslog Adapter VM Ephemeral Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -15213,7 +15213,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Diego Cell VM Health",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -15283,7 +15283,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Diego Cell VM Memory Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -15353,7 +15353,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Diego Cell VM CPU Utilization",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -15423,7 +15423,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Diego Cell VM System Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -15493,7 +15493,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Diego Cell VM Ephemeral Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -15563,7 +15563,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Diego Brain VM CPU Utilization",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -15633,7 +15633,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Credhub VM CPU Utilization",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -15703,7 +15703,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Syslog Scheduler VM Memory Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -15773,7 +15773,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Syslog Scheduler VM CPU Utilization",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -15843,7 +15843,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Diego Database VM Health",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -15913,7 +15913,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Diego Database VM Memory Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -15983,7 +15983,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Diego Database VM CPU Utilization",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -16053,7 +16053,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Diego Database VM System Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -16123,7 +16123,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Diego Database VM Ephemeral Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -16193,7 +16193,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-TCP Router VM Health",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -16263,7 +16263,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-TCP Router VM Memory Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -16333,7 +16333,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-TCP Router VM CPU Utilization",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -16403,7 +16403,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-TCP Router VM System Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -16473,7 +16473,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-TCP Router VM Ephemeral Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -16543,7 +16543,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-TCP Router VM Persistent Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -16613,7 +16613,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Syslog Scheduler VM System Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -16683,7 +16683,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Syslog Scheduler VM Ephemeral Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -16753,7 +16753,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Doppler VM Health",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -16823,7 +16823,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Doppler VM Memory Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -16893,7 +16893,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Doppler VM CPU Utilization",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -16963,7 +16963,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Doppler VM System Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -17033,7 +17033,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Doppler VM Ephemeral Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -17103,7 +17103,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Uaa VM Health",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -17173,7 +17173,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Uaa VM Memory Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -17243,7 +17243,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Uaa VM CPU Utilization",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -17313,7 +17313,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Uaa VM System Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -17383,7 +17383,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Uaa VM Ephemeral Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -17453,7 +17453,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Loggregator Trafficcontroller VM Memory Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -17523,7 +17523,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Loggregator Trafficcontroller VM CPU Utilization",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -17593,7 +17593,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Clock Global VM Ephemeral Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -17663,7 +17663,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-Loggregator Trafficcontroller VM Ephemeral Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -17733,7 +17733,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-MySql VM System Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -17803,7 +17803,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-MySql VM Ephemeral Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
@@ -17873,7 +17873,7 @@
                 {
                     "applicationName": "${APPLICATION_NAME}",
                     "entityType": "POLICY",
-                    "entityName": "${TIER_NAME}-Unhealthy Cells",
+                    "entityName": "${TIER_NAME}-MySql VM Persistent Disk Used",
                     "scopingEntityType": null,
                     "scopingEntityName": null,
                     "subtype": null
