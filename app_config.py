@@ -5,9 +5,10 @@ user_pass = None
 app = None
 tier = None
 tier_id = None
-overwrite_hrs = None
+overwrite = False
 start_service = None
 port = None
+commandline = False
 
 def get_full_user_name():
     return user_name + '@' + account_name

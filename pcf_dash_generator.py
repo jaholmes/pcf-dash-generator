@@ -13,11 +13,11 @@ pcf_dash_template_file = 'templates/pcf_dashboard_template_v1.json'
 pcf_dash_generated_file = 'generated/pcf_dashboard_generated.json'
 pcf_hrs_template_file = 'templates/pcf_healthrules_template_v1.xml'
 pcf_hrs_generated_file = 'generated/pcf_healthrules_generated.xml'
+dashboard_name = '${APPLICATION_NAME}-${TIER_NAME}-PCF KPI Dashboard'
 
 fileConfig('logging_config.ini')
 logger = logging.getLogger()
 service = Flask(__name__)
-commandline = False
 
 #todo
 #flask/REST endpoints
@@ -54,7 +54,7 @@ def parse_args():
     parser.add_argument('--tier_id', help='the tier component id used in metric path as COMPONENT:<id>', default=None)
     parser.add_argument('--start_service', help='start the rest API service', action='store_true', default=False)
     parser.add_argument('--service_port', help='override the default port 8080 for the service', type=int, default=8080)
-    parser.add_argument("--overwrite_hrs", help='set to true to overwrite existing health rules with the same name in the target controller', 
+    parser.add_argument("--overwrite", help='set to true to overwrite existing health rules and recreate dashboard on the target controller', 
                         action='store_true', default=False)
     args = parser.parse_args()
     logger.info('args: ' + str(args))
@@ -66,7 +66,7 @@ def parse_args():
     app_config.app = args.app
     app_config.tier = args.tier
     app_config.tier_id = args.tier_id    
-    app_config.overwrite_hrs = args.overwrite_hrs
+    app_config.overwrite = args.overwrite
     app_config.start_service = args.start_service
     app_config.service_port = args.service_port
     
@@ -175,25 +175,48 @@ def generate_healthrules(pcf_services, system_metrics_parent_folder, app, tier, 
                                        UAA_0_GUID=pcf_services['uaa'][0]['guid'])
     return generated
 
-def upload_healthrules(healthrules_xml):
-    logger.info('uploading health rules to controller (overwrite=(' + str(app_config.overwrite_hrs) + '))')    
+def dashboard_already_exists():
+    dash_name_template = Template(dashboard_name)
+    dash_name = dash_name_template.substitute(APPLICATION_NAME=app_config.app, TIER_NAME=app_config.tier)
+    logger.info('checking if dashboard already exists on controller with name: ' + dash_name)
+    session = requests.Session()
+    session.auth=app_config.get_full_user_name(), app_config.user_pass
+    login = session.get(app_config.controller_url + '/controller/auth?action=login')
+    session.headers['X-CSRF-TOKEN'] = login.cookies['X-CSRF-TOKEN']
+    url = app_config.controller_url + '/controller/restui/dashboards/getAllDashboardsByType/false'
+    logger.debug('url: ' + url)        
+    response = session.get(url)
+    logger.debug('response: ' + str(response.json()))
+    response.raise_for_status();
+    dashboards = response.json()
+    for dashboard in dashboards:
+        logger.debug('name: ' + dashboard['name'])
+        if dashboard['name'] == dash_name:
+            return True
+    return False
+
+def upload_healthrules(healthrules_xml, overwrite):
+    logger.info('uploading health rules to controller (overwrite=(' + str(app_config.overwrite) + '))')    
     url = app_config.controller_url + '/controller/healthrules/' + app_config.app
-    if app_config.overwrite_hrs:
+    if overwrite:
         url += "?overwrite=true"
     logger.debug('url: ' + url)    
     response = requests.post(url, auth=(app_config.get_full_user_name(), app_config.user_pass), files={'file':healthrules_xml})
     response.raise_for_status();
     logger.debug('response: ' + str(response.content))
 
-def upload_dashboard(dashboard_json):
-    logger.info('uploading dashboard to controller')        
+def upload_dashboard(dashboard_json, overwrite):
+    logger.info('uploading dashboard to controller')
+    if not overwrite and dashboard_already_exists(): 
+        logger.info('dashboard already exists on controller, skipping upload (overwrite=(' + str(overwrite) + '))')
+        return
     url = app_config.controller_url + '/controller/CustomDashboardImportExportServlet'
     logger.debug('url: ' + url)    
     response = requests.post(url, auth=(app_config.get_full_user_name(), app_config.user_pass), files={'file':dashboard_json})
     response.raise_for_status();
     logger.debug('response status code: ' + str(response.status_code))
 
-def publish_dashboard_and_hrs():
+def publish_dashboard_and_hrs(overwrite):
     logger.info('publishing pcf dashboards and hrs')
     system_metrics_parent_folder = get_system_metrics_parent_folder()
     logger.debug('system_metrics_parent_folder: ' + str(system_metrics_parent_folder))
@@ -203,14 +226,14 @@ def publish_dashboard_and_hrs():
     
     dashboard = generate_dashboard(pcf_services, system_metrics_parent_folder, app_config.app, app_config.tier)
     healthrules = generate_healthrules(pcf_services, system_metrics_parent_folder, app_config.app, app_config.tier, app_config.tier_id)
-    if commandline and not app_config.start_service:
+    if app_config.commandline and not app_config.start_service:
         logger.info('writing generated dashboard and hrs to file system')
         with open(pcf_dash_generated_file, 'w', encoding='utf-8') as myfile:
             myfile.write(dashboard)
         with open(pcf_hrs_generated_file, 'w', encoding='utf-8') as myfile:
             myfile.write(healthrules)
-    upload_dashboard(dashboard)
-    upload_healthrules(healthrules)
+    upload_dashboard(dashboard, overwrite)
+    upload_healthrules(healthrules, overwrite)
     logger.info('done publishing pcf dashboards and hrs')
     
 def start_flask():
@@ -221,17 +244,18 @@ def start_flask():
 def publish():
     #todo content = request.json
     #logger.debug('content: ' + str(content))
-    publish_dashboard_and_hrs()
+    overwrite = request.args.get('overwrite') is not None and request.args.get('overwrite').lower() == 'true' 
+    publish_dashboard_and_hrs(overwrite)
     return 'done'
-    
+        
 def start_app_commandline():
-    commandline = True
+    app_config.commandline = True
     parse_args()
     if app_config.start_service:
         logger.info('starting service')
         start_flask()
     else:
-        publish_dashboard_and_hrs()
+        publish_dashboard_and_hrs(app_config.overwrite)
 
 def start_app_pcf():
     parse_env()
