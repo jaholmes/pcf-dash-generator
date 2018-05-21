@@ -10,8 +10,10 @@ start_service = None
 port = None
 commandline = False
 
+
 def get_full_user_name():
     return user_name + '@' + account_name
+
 
 def get_controller_url(host, port, ssl_enabled):
     controller_url = ''
@@ -22,4 +24,3 @@ def get_controller_url(host, port, ssl_enabled):
     controller_url += host
     if port is not None: controller_url += ':' + port
     return controller_url
-    
