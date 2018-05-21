@@ -239,12 +239,12 @@ def pcf_metric_path_exists():
             session.verify = 'cert.pem'
         response = session.get(url, params=query_prams)
         response.raise_for_status()
+        logger.debug('response: ' + str(response.json()))
     except HTTPError as err:
         if err.response.status_code == 400 and 'invalid application' in err.response.reason.lower():
             logger.debug('application \'%s\' doesn\'t exist', app_config.app)
             return False
-    logger.debug('response: ' + str(response.json()))
-    if len(response.json()) == 0:
+    if response and len(response.json()) == 0:
         return False   
     return True
     
@@ -332,7 +332,6 @@ def start_app_pcf():
     if gunicorn_logger is not None:
         service.logger.handlers = gunicorn_logger.handlers
         service.logger.setLevel(gunicorn_logger.level)
-
 
 
 if __name__ == '__main__':
