@@ -30,6 +30,7 @@ class MetricPathNotFound(Exception):
         super().__init__(message)
 
 #todo
+#fix logic in system_metrics_parent_folder
 #flask/REST endpoints
 #    3. get generated dashboard w/o publishing
 #    4. get default settings
