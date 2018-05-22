@@ -17,3 +17,4 @@ applications:
     APPD_MA_SSL_ENABLED: true
     APPD_MA_ACCOUNT_NAME: customer1
     APPD_NOZZLE_TIER_ID: 117
+    APPD_NOZZLE_APP_NAME: APP
