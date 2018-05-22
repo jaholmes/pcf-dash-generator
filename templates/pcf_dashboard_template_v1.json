@@ -113,7 +113,7 @@
                             "displayName": "null",
                             "inputMetricText": false,
                             "inputMetricPath": null,
-                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Gorouter Metrics|gorouter|cf|router|${ROUTER_0_GUID}|192.168.16.28|gorouter.total_routes",
+                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|Gorouter Metrics|gorouter|cf|router|${ROUTER_0_GUID}|gorouter.total_routes",
                             "scopeEntity": {
                                 "applicationName": "${APPLICATION_NAME}",
                                 "entityType": "APPLICATION_COMPONENT",
@@ -510,7 +510,7 @@
                                                 "displayName": "TotalContainersCellZero",
                                                 "inputMetricText": false,
                                                 "inputMetricPath": null,
-                                                "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_1_GUID}|192.168.16.37|rep.CapacityTotalContainers",
+                                                "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_1_GUID}|rep.CapacityTotalContainers",
                                                 "scopeEntity": {
                                                     "applicationName": "${APPLICATION_NAME}",
                                                     "entityType": "APPLICATION_COMPONENT",
@@ -526,7 +526,7 @@
                                                 "displayName": "TotalContainersCellOne",
                                                 "inputMetricText": false,
                                                 "inputMetricPath": null,
-                                                "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_0_GUID}|192.168.16.41|rep.CapacityTotalContainers",
+                                                "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_0_GUID}|rep.CapacityTotalContainers",
                                                 "scopeEntity": {
                                                     "applicationName": "${APPLICATION_NAME}",
                                                     "entityType": "APPLICATION_COMPONENT",
@@ -543,7 +543,7 @@
                                             "displayName": "TotalContainersCellTwo",
                                             "inputMetricText": false,
                                             "inputMetricPath": null,
-                                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_2_GUID}|192.168.16.39|rep.CapacityTotalContainers",
+                                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_2_GUID}|rep.CapacityTotalContainers",
                                             "scopeEntity": {
                                                 "applicationName": "${APPLICATION_NAME}",
                                                 "entityType": "APPLICATION_COMPONENT",
@@ -570,7 +570,7 @@
                                                 "displayName": "RemainingContainersCellZero",
                                                 "inputMetricText": false,
                                                 "inputMetricPath": null,
-                                                "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_1_GUID}|192.168.16.37|rep.CapacityRemainingContainers",
+                                                "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_1_GUID}|rep.CapacityRemainingContainers",
                                                 "scopeEntity": {
                                                     "applicationName": "${APPLICATION_NAME}",
                                                     "entityType": "APPLICATION_COMPONENT",
@@ -586,7 +586,7 @@
                                                 "displayName": "RemainingContainersCellOne",
                                                 "inputMetricText": false,
                                                 "inputMetricPath": null,
-                                                "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_0_GUID}|192.168.16.41|rep.CapacityRemainingContainers",
+                                                "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_0_GUID}|rep.CapacityRemainingContainers",
                                                 "scopeEntity": {
                                                     "applicationName": "${APPLICATION_NAME}",
                                                     "entityType": "APPLICATION_COMPONENT",
@@ -603,7 +603,7 @@
                                             "displayName": "RemainingContainersCellTwo",
                                             "inputMetricText": false,
                                             "inputMetricPath": null,
-                                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_2_GUID}|192.168.16.39|rep.CapacityRemainingContainers",
+                                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_2_GUID}|rep.CapacityRemainingContainers",
                                             "scopeEntity": {
                                                 "applicationName": "${APPLICATION_NAME}",
                                                 "entityType": "APPLICATION_COMPONENT",
@@ -631,7 +631,7 @@
                                             "displayName": "TotalContainersCellZero",
                                             "inputMetricText": false,
                                             "inputMetricPath": null,
-                                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_1_GUID}|192.168.16.37|rep.CapacityTotalContainers",
+                                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_1_GUID}|rep.CapacityTotalContainers",
                                             "scopeEntity": {
                                                 "applicationName": "${APPLICATION_NAME}",
                                                 "entityType": "APPLICATION_COMPONENT",
@@ -647,7 +647,7 @@
                                             "displayName": "TotalContainersCellOne",
                                             "inputMetricText": false,
                                             "inputMetricPath": null,
-                                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_0_GUID}|192.168.16.41|rep.CapacityTotalContainers",
+                                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_0_GUID}|rep.CapacityTotalContainers",
                                             "scopeEntity": {
                                                 "applicationName": "${APPLICATION_NAME}",
                                                 "entityType": "APPLICATION_COMPONENT",
@@ -664,7 +664,7 @@
                                         "displayName": "TotalContainersCellTwo",
                                         "inputMetricText": false,
                                         "inputMetricPath": null,
-                                        "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_2_GUID}|192.168.16.39|rep.CapacityTotalContainers",
+                                        "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_2_GUID}|rep.CapacityTotalContainers",
                                         "scopeEntity": {
                                             "applicationName": "${APPLICATION_NAME}",
                                             "entityType": "APPLICATION_COMPONENT",
@@ -823,7 +823,7 @@
                                                 "displayName": "TotalDiskCellZero",
                                                 "inputMetricText": false,
                                                 "inputMetricPath": null,
-                                                "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_1_GUID}|192.168.16.37|rep.CapacityTotalDisk",
+                                                "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_1_GUID}|rep.CapacityTotalDisk",
                                                 "scopeEntity": {
                                                     "applicationName": "${APPLICATION_NAME}",
                                                     "entityType": "APPLICATION_COMPONENT",
@@ -839,7 +839,7 @@
                                                 "displayName": "TotalDiskCellOne",
                                                 "inputMetricText": false,
                                                 "inputMetricPath": null,
-                                                "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_0_GUID}|192.168.16.41|rep.CapacityTotalDisk",
+                                                "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_0_GUID}|rep.CapacityTotalDisk",
                                                 "scopeEntity": {
                                                     "applicationName": "${APPLICATION_NAME}",
                                                     "entityType": "APPLICATION_COMPONENT",
@@ -856,7 +856,7 @@
                                             "displayName": "TotalDiskCellTwo",
                                             "inputMetricText": false,
                                             "inputMetricPath": null,
-                                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_2_GUID}|192.168.16.39|rep.CapacityTotalDisk",
+                                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_2_GUID}|rep.CapacityTotalDisk",
                                             "scopeEntity": {
                                                 "applicationName": "${APPLICATION_NAME}",
                                                 "entityType": "APPLICATION_COMPONENT",
@@ -883,7 +883,7 @@
                                                 "displayName": "RemainingDiskCellZero",
                                                 "inputMetricText": false,
                                                 "inputMetricPath": null,
-                                                "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_1_GUID}|192.168.16.37|rep.CapacityRemainingDisk",
+                                                "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_1_GUID}|rep.CapacityRemainingDisk",
                                                 "scopeEntity": {
                                                     "applicationName": "${APPLICATION_NAME}",
                                                     "entityType": "APPLICATION_COMPONENT",
@@ -899,7 +899,7 @@
                                                 "displayName": "RemainingDiskCellOne",
                                                 "inputMetricText": false,
                                                 "inputMetricPath": null,
-                                                "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_0_GUID}|192.168.16.41|rep.CapacityRemainingDisk",
+                                                "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_0_GUID}|rep.CapacityRemainingDisk",
                                                 "scopeEntity": {
                                                     "applicationName": "${APPLICATION_NAME}",
                                                     "entityType": "APPLICATION_COMPONENT",
@@ -916,7 +916,7 @@
                                             "displayName": "RemainingDiskCellTwo",
                                             "inputMetricText": false,
                                             "inputMetricPath": null,
-                                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_2_GUID}|192.168.16.39|rep.CapacityRemainingDisk",
+                                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_2_GUID}|rep.CapacityRemainingDisk",
                                             "scopeEntity": {
                                                 "applicationName": "${APPLICATION_NAME}",
                                                 "entityType": "APPLICATION_COMPONENT",
@@ -944,7 +944,7 @@
                                             "displayName": "TotalDiskCellZero",
                                             "inputMetricText": false,
                                             "inputMetricPath": null,
-                                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_1_GUID}|192.168.16.37|rep.CapacityTotalDisk",
+                                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_1_GUID}|rep.CapacityTotalDisk",
                                             "scopeEntity": {
                                                 "applicationName": "${APPLICATION_NAME}",
                                                 "entityType": "APPLICATION_COMPONENT",
@@ -960,7 +960,7 @@
                                             "displayName": "TotalDiskCellOne",
                                             "inputMetricText": false,
                                             "inputMetricPath": null,
-                                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_0_GUID}|192.168.16.41|rep.CapacityTotalDisk",
+                                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_0_GUID}|rep.CapacityTotalDisk",
                                             "scopeEntity": {
                                                 "applicationName": "${APPLICATION_NAME}",
                                                 "entityType": "APPLICATION_COMPONENT",
@@ -977,7 +977,7 @@
                                         "displayName": "TotalDiskCellTwo",
                                         "inputMetricText": false,
                                         "inputMetricPath": null,
-                                        "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_2_GUID}|192.168.16.39|rep.CapacityTotalDisk",
+                                        "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_2_GUID}|rep.CapacityTotalDisk",
                                         "scopeEntity": {
                                             "applicationName": "${APPLICATION_NAME}",
                                             "entityType": "APPLICATION_COMPONENT",
@@ -2364,7 +2364,7 @@
                                                 "displayName": "TotalMemoryCellZero",
                                                 "inputMetricText": false,
                                                 "inputMetricPath": null,
-                                                "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_1_GUID}|192.168.16.37|rep.CapacityTotalMemory",
+                                                "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_1_GUID}|rep.CapacityTotalMemory",
                                                 "scopeEntity": {
                                                     "applicationName": "${APPLICATION_NAME}",
                                                     "entityType": "APPLICATION_COMPONENT",
@@ -2380,7 +2380,7 @@
                                                 "displayName": "TotalMemoryCellOne",
                                                 "inputMetricText": false,
                                                 "inputMetricPath": null,
-                                                "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_0_GUID}|192.168.16.41|rep.CapacityTotalMemory",
+                                                "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_0_GUID}|rep.CapacityTotalMemory",
                                                 "scopeEntity": {
                                                     "applicationName": "${APPLICATION_NAME}",
                                                     "entityType": "APPLICATION_COMPONENT",
@@ -2397,7 +2397,7 @@
                                             "displayName": "TotalMemoryCellTwo",
                                             "inputMetricText": false,
                                             "inputMetricPath": null,
-                                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_2_GUID}|192.168.16.39|rep.CapacityTotalMemory",
+                                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_2_GUID}|rep.CapacityTotalMemory",
                                             "scopeEntity": {
                                                 "applicationName": "${APPLICATION_NAME}",
                                                 "entityType": "APPLICATION_COMPONENT",
@@ -2424,7 +2424,7 @@
                                                 "displayName": "RemainingMemoryCellZero",
                                                 "inputMetricText": false,
                                                 "inputMetricPath": null,
-                                                "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_1_GUID}|192.168.16.37|rep.CapacityRemainingMemory",
+                                                "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_1_GUID}|rep.CapacityRemainingMemory",
                                                 "scopeEntity": {
                                                     "applicationName": "${APPLICATION_NAME}",
                                                     "entityType": "APPLICATION_COMPONENT",
@@ -2440,7 +2440,7 @@
                                                 "displayName": "RemainingMemoryCellOne",
                                                 "inputMetricText": false,
                                                 "inputMetricPath": null,
-                                                "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_0_GUID}|192.168.16.41|rep.CapacityRemainingMemory",
+                                                "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_0_GUID}|rep.CapacityRemainingMemory",
                                                 "scopeEntity": {
                                                     "applicationName": "${APPLICATION_NAME}",
                                                     "entityType": "APPLICATION_COMPONENT",
@@ -2457,7 +2457,7 @@
                                             "displayName": "RemainingMemoryCellTwo",
                                             "inputMetricText": false,
                                             "inputMetricPath": null,
-                                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_2_GUID}|192.168.16.39|rep.CapacityRemainingMemory",
+                                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_2_GUID}|rep.CapacityRemainingMemory",
                                             "scopeEntity": {
                                                 "applicationName": "${APPLICATION_NAME}",
                                                 "entityType": "APPLICATION_COMPONENT",
@@ -2485,7 +2485,7 @@
                                             "displayName": "TotalMemoryCellZero",
                                             "inputMetricText": false,
                                             "inputMetricPath": null,
-                                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_1_GUID}|192.168.16.37|rep.CapacityTotalMemory",
+                                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_1_GUID}|rep.CapacityTotalMemory",
                                             "scopeEntity": {
                                                 "applicationName": "${APPLICATION_NAME}",
                                                 "entityType": "APPLICATION_COMPONENT",
@@ -2501,7 +2501,7 @@
                                             "displayName": "TotalMemoryCellOne",
                                             "inputMetricText": false,
                                             "inputMetricPath": null,
-                                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_0_GUID}|192.168.16.41|rep.CapacityTotalMemory",
+                                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_0_GUID}|rep.CapacityTotalMemory",
                                             "scopeEntity": {
                                                 "applicationName": "${APPLICATION_NAME}",
                                                 "entityType": "APPLICATION_COMPONENT",
@@ -2518,7 +2518,7 @@
                                         "displayName": "TotalMemoryCellTwo",
                                         "inputMetricText": false,
                                         "inputMetricPath": null,
-                                        "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_2_GUID}|192.168.16.39|rep.CapacityTotalMemory",
+                                        "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_2_GUID}|rep.CapacityTotalMemory",
                                         "scopeEntity": {
                                             "applicationName": "${APPLICATION_NAME}",
                                             "entityType": "APPLICATION_COMPONENT",
@@ -4546,7 +4546,7 @@
                             "displayName": "null",
                             "inputMetricText": false,
                             "inputMetricPath": null,
-                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|System (BOSH) Metrics|bosh-system-metrics-forwarder|${SYSTEM_METRICS_PARENT_FOLDER}|router|${ROUTER_0_GUID}|bosh-system-metrics-forwarder.system.cpu.user",
+                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|System (BOSH) Metrics|bosh-system-metrics-forwarder|${SYSTEM_METRICS_PARENT_FOLDER}|router|${ROUTER_0_GUID}|bosh-system-metrics-forwarder.system.cpu.user",
                             "scopeEntity": {
                                 "applicationName": "${APPLICATION_NAME}",
                                 "entityType": "APPLICATION_COMPONENT",
@@ -8772,7 +8772,7 @@
                             "displayName": "null",
                             "inputMetricText": false,
                             "inputMetricPath": null,
-                            "relativeMetricPath": "Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|*|*|rep.CapacityRemainingContainers"
+                            "relativeMetricPath": "Custom Metrics|PCF Firehose Monitor|Diego Cell Metrics|rep|cf|diego_cell|*|*|rep.CapacityRemainingContainers"
                         },
                         "rollupMetricData": false,
                         "expressionString": "",
@@ -8900,7 +8900,7 @@
                             "displayName": "null",
                             "inputMetricText": false,
                             "inputMetricPath": null,
-                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_1_GUID}|192.168.16.37|rep.CapacityRemainingMemory",
+                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_1_GUID}|rep.CapacityRemainingMemory",
                             "scopeEntity": {
                                 "applicationName": "${APPLICATION_NAME}",
                                 "entityType": "APPLICATION_COMPONENT",
@@ -8937,7 +8937,7 @@
                             "displayName": "null",
                             "inputMetricText": false,
                             "inputMetricPath": null,
-                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_1_GUID}|192.168.16.37|rep.CapacityRemainingMemory",
+                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_1_GUID}|rep.CapacityRemainingMemory",
                             "scopeEntity": {
                                 "applicationName": "${APPLICATION_NAME}",
                                 "entityType": "APPLICATION_COMPONENT",
@@ -8974,7 +8974,7 @@
                             "displayName": "null",
                             "inputMetricText": false,
                             "inputMetricPath": null,
-                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_0_GUID}|192.168.16.41|rep.CapacityTotalMemory",
+                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_0_GUID}|rep.CapacityTotalMemory",
                             "scopeEntity": {
                                 "applicationName": "${APPLICATION_NAME}",
                                 "entityType": "APPLICATION_COMPONENT",
@@ -9198,7 +9198,7 @@
                             "displayName": "null",
                             "inputMetricText": false,
                             "inputMetricPath": null,
-                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_1_GUID}|192.168.16.37|rep.CapacityRemainingDisk",
+                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_1_GUID}|rep.CapacityRemainingDisk",
                             "scopeEntity": {
                                 "applicationName": "${APPLICATION_NAME}",
                                 "entityType": "APPLICATION_COMPONENT",
@@ -9235,7 +9235,7 @@
                             "displayName": "null",
                             "inputMetricText": false,
                             "inputMetricPath": null,
-                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_1_GUID}|192.168.16.37|rep.CapacityRemainingDisk",
+                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_1_GUID}|rep.CapacityRemainingDisk",
                             "scopeEntity": {
                                 "applicationName": "${APPLICATION_NAME}",
                                 "entityType": "APPLICATION_COMPONENT",
@@ -9272,7 +9272,7 @@
                             "displayName": "null",
                             "inputMetricText": false,
                             "inputMetricPath": null,
-                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_0_GUID}|192.168.16.41|rep.CapacityRemainingDisk",
+                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_0_GUID}|rep.CapacityRemainingDisk",
                             "scopeEntity": {
                                 "applicationName": "${APPLICATION_NAME}",
                                 "entityType": "APPLICATION_COMPONENT",
@@ -9364,7 +9364,7 @@
                             "displayName": "null",
                             "inputMetricText": false,
                             "inputMetricPath": null,
-                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_1_GUID}|192.168.16.37|rep.CapacityRemainingContainers",
+                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_1_GUID}|rep.CapacityRemainingContainers",
                             "scopeEntity": {
                                 "applicationName": "${APPLICATION_NAME}",
                                 "entityType": "APPLICATION_COMPONENT",
@@ -9401,7 +9401,7 @@
                             "displayName": "null",
                             "inputMetricText": false,
                             "inputMetricPath": null,
-                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_1_GUID}|192.168.16.37|rep.CapacityRemainingContainers",
+                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_1_GUID}|rep.CapacityRemainingContainers",
                             "scopeEntity": {
                                 "applicationName": "${APPLICATION_NAME}",
                                 "entityType": "APPLICATION_COMPONENT",
@@ -9438,7 +9438,7 @@
                             "displayName": "null",
                             "inputMetricText": false,
                             "inputMetricPath": null,
-                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_0_GUID}|192.168.16.41|rep.CapacityRemainingContainers",
+                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|Diego Cell Metrics|rep|cf|diego_cell|${DIEGO_CELL_0_GUID}|rep.CapacityRemainingContainers",
                             "scopeEntity": {
                                 "applicationName": "${APPLICATION_NAME}",
                                 "entityType": "APPLICATION_COMPONENT",
@@ -9530,7 +9530,7 @@
                             "displayName": "null",
                             "inputMetricText": false,
                             "inputMetricPath": null,
-                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose|${SERVER_NAME}|System (BOSH) Metrics|bosh-system-metrics-forwarder|${SYSTEM_METRICS_PARENT_FOLDER}|uaa|${UAA_0_GUID}|bosh-system-metrics-forwarder.system.cpu.user",
+                            "metricPath": "Application Infrastructure Performance|${TIER_NAME}|Custom Metrics|PCF Firehose Monitor|System (BOSH) Metrics|bosh-system-metrics-forwarder|${SYSTEM_METRICS_PARENT_FOLDER}|uaa|${UAA_0_GUID}|bosh-system-metrics-forwarder.system.cpu.user",
                             "scopeEntity": {
                                 "applicationName": "${APPLICATION_NAME}",
                                 "entityType": "APPLICATION_COMPONENT",

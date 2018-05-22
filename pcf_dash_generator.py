@@ -25,6 +25,10 @@ fileConfig('logging_config.ini')
 logger = logging.getLogger()
 service = Flask(__name__)
 
+class MetricPathNotFound(Exception):
+    def __init__(self, message):
+        super().__init__(message)
+
 #todo
 #flask/REST endpoints
 #    3. get generated dashboard w/o publishing
@@ -78,7 +82,7 @@ def parse_args():
     
 
 def get_system_metrics_parent_folder():
-    metric_path_root = 'Application Infrastructure Performance|' + app_config.tier + '|Custom Metrics|PCF Firehose|SERVER25|System (BOSH) Metrics|bosh-system-metrics-forwarder'
+    metric_path_root = 'Application Infrastructure Performance|' + app_config.tier + '|Custom Metrics|PCF Firehose Monitor|System (BOSH) Metrics|bosh-system-metrics-forwarder'
     query_prams='?output=json&metric-path=' + metric_path_root
     url = app_config.controller_url + '/controller/rest/applications/' + app_config.app + '/metrics' + query_prams
     logger.debug('url: ' + url)    
@@ -104,7 +108,7 @@ def get_system_metrics_parent_folder():
 def get_pcf_services(system_metrics_parent_folder):
     logger.info('getting pcf service details from controller')
 
-    metric_path_root = 'Application Infrastructure Performance|' + app_config.tier + '|Custom Metrics|PCF Firehose|SERVER25|System (BOSH) Metrics|bosh-system-metrics-forwarder|' + system_metrics_parent_folder    
+    metric_path_root = 'Application Infrastructure Performance|' + app_config.tier + '|Custom Metrics|PCF Firehose Monitor|System (BOSH) Metrics|bosh-system-metrics-forwarder|' + system_metrics_parent_folder    
 
     query_prams='?output=json&metric-path=' + metric_path_root
     url = app_config.controller_url + '/controller/rest/applications/' + app_config.app + '/metrics' + query_prams
@@ -224,7 +228,7 @@ def pcf_metric_path_exists_with_retry():
 
 
 def pcf_metric_path_exists():
-    metric_path_root = 'Application Infrastructure Performance|' + app_config.tier + '|Custom Metrics|PCF Firehose|SERVER25|System (BOSH) Metrics|bosh-system-metrics-forwarder'
+    metric_path_root = 'Application Infrastructure Performance|' + app_config.tier + '|Custom Metrics|PCF Firehose Monitor|System (BOSH) Metrics|bosh-system-metrics-forwarder'
     query_prams = {
         'output': 'json',
         'metric-path': metric_path_root
@@ -239,14 +243,25 @@ def pcf_metric_path_exists():
             session.verify = 'cert.pem'
         response = session.get(url, params=query_prams)
         response.raise_for_status()
-        logger.debug('response: ' + str(response.json()))
+        if response is not None: logger.debug('response: ' + str(response.json()))        
     except HTTPError as err:
         if err.response.status_code == 400 and 'invalid application' in err.response.reason.lower():
             logger.debug('application \'%s\' doesn\'t exist', app_config.app)
             return False
-    if response and len(response.json()) == 0:
+    if response is None or len(response.json()) == 0:
         return False   
     return True
+       
+        
+def check_pcf_metric_path_exists(retry=False):
+    if retry:
+        metric_path_exists = pcf_metric_path_exists_with_retry()
+    else:     
+        metric_path_exists = pcf_metric_path_exists()        
+    if not metric_path_exists:
+        msg = 'error: failed to find PCF metric path in target controller required to publish dashboard'        
+        logger.error(msg)
+        raise MetricPathNotFound(msg)
     
 
 def upload_healthrules(healthrules_xml, overwrite):
@@ -272,8 +287,9 @@ def upload_dashboard(dashboard_json, overwrite):
     logger.debug('response status code: ' + str(response.status_code))
 
 
-def publish_dashboard_and_hrs(overwrite):
+def publish_dashboard_and_hrs(retry=False, overwrite=False):
     logger.info('publishing pcf dashboards and hrs')
+    check_pcf_metric_path_exists(retry)
     system_metrics_parent_folder = get_system_metrics_parent_folder()
     logger.debug('system_metrics_parent_folder: ' + str(system_metrics_parent_folder))
     pcf_services = get_pcf_services(system_metrics_parent_folder)
@@ -301,15 +317,11 @@ def publish():
     logger.info('request received: publish')    
     overwrite = request.args.get('overwrite') is not None and request.args.get('overwrite').lower() == 'true'
     retry = request.args.get('retry') is not None and request.args.get('retry').lower() == 'true'
-    if retry:
-        metric_path_exists = pcf_metric_path_exists_with_retry()
-    else:     
-        metric_path_exists = pcf_metric_path_exists()        
-    if not metric_path_exists:
-        msg = 'failed to find PCF metric paths in target controller required to publish dashboard, giving up'        
-        logger.error(msg)
-        return Response(msg, 404)
-    publish_dashboard_and_hrs(overwrite)
+    try:
+        publish_dashboard_and_hrs(retry, overwrite)
+    except MetricPathNotFound as e:
+        logger.error(str(e))
+        return Response(str(e), 404)        
     return 'done'
 
 
@@ -320,11 +332,7 @@ def start_app_commandline():
         logger.info('starting service')
         start_flask()
     else:
-        if not pcf_metric_path_exists():
-            logger.error('failed to find PCF metric paths in target controller required to publish dashboard, giving up')
-            return
-        publish_dashboard_and_hrs(app_config.overwrite)
-
+        publish_dashboard_and_hrs()
 
 def start_app_pcf():
     parse_env()
@@ -332,8 +340,8 @@ def start_app_pcf():
     if gunicorn_logger is not None:
         service.logger.handlers = gunicorn_logger.handlers
         service.logger.setLevel(gunicorn_logger.level)
-
-
+    publish_dashboard_and_hrs(retry=True)
+        
 if __name__ == '__main__':
     start_app_commandline()
 else:
