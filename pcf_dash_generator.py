@@ -32,6 +32,7 @@ service = Flask(__name__)
 #    5. get recent status
 #unexpected exceptions, mapping to http error codes
 
+
 def parse_env():
     controller_host = os.getenv('APPD_MA_HOST_NAME')
     controller_port = os.getenv('APPD_MA_PORT')
@@ -44,6 +45,7 @@ def parse_env():
     app_config.app = os.getenv('APPD_NOZZLE_APP_NAME')
     app_config.tier = os.getenv('APPD_NOZZLE_TIER_NAME')
     app_config.tier_id = os.getenv('APPD_NOZZLE_TIER_ID')    
+
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -74,6 +76,7 @@ def parse_args():
     app_config.start_service = args.start_service
     app_config.service_port = args.service_port
     
+
 def get_system_metrics_parent_folder():
     metric_path_root = 'Application Infrastructure Performance|' + app_config.tier + '|Custom Metrics|PCF Firehose|SERVER25|System (BOSH) Metrics|bosh-system-metrics-forwarder'
     query_prams='?output=json&metric-path=' + metric_path_root
@@ -97,6 +100,7 @@ def get_system_metrics_parent_folder():
         raise RuntimeError("unable to locate resource metrics parent folder using url: " + url)
     return resource_parent_folder
     
+
 def get_pcf_services(system_metrics_parent_folder):
     logger.info('getting pcf service details from controller')
 
@@ -131,6 +135,7 @@ def get_pcf_services(system_metrics_parent_folder):
             pcf_services[service_name][i] = {'guid' : guid}
     return pcf_services
 
+
 def generate_dashboard(pcf_services, system_metrics_parent_folder, app, tier):
     logger.info('generating dashboard from template')
     with open(pcf_dash_template_file, 'r', encoding='utf-8') as myfile:
@@ -147,6 +152,7 @@ def generate_dashboard(pcf_services, system_metrics_parent_folder, app, tier):
                                  UAA_0_GUID=pcf_services['uaa'][0]['guid'])
                                  
     return generated
+
 
 def generate_healthrules(pcf_services, system_metrics_parent_folder, app, tier, tier_id):
     logger.info('generating health rules from template')    
@@ -179,6 +185,7 @@ def generate_healthrules(pcf_services, system_metrics_parent_folder, app, tier, 
                                        UAA_0_GUID=pcf_services['uaa'][0]['guid'])
     return generated
 
+
 def dashboard_already_exists():
     dash_name_template = Template(dashboard_name)
     dash_name = dash_name_template.substitute(APPLICATION_NAME=app_config.app, TIER_NAME=app_config.tier)
@@ -199,10 +206,14 @@ def dashboard_already_exists():
             return True
     return False
 
+
 def return_last_value(last_attempt):
     return last_attempt.result()
+
+
 def is_false(value):
     return value is False
+
 
 @retry(wait=wait_exponential(max=publish_max_retry_delay_seconds),
        stop=stop_after_attempt(publish_max_retries),
@@ -210,24 +221,34 @@ def is_false(value):
        retry_error_callback=return_last_value) 
 def pcf_metric_path_exists_with_retry():
     return pcf_metric_path_exists()
-    
+
+
 def pcf_metric_path_exists():
     metric_path_root = 'Application Infrastructure Performance|' + app_config.tier + '|Custom Metrics|PCF Firehose|SERVER25|System (BOSH) Metrics|bosh-system-metrics-forwarder'
-    query_prams='?output=json&metric-path=' + metric_path_root
-    url = app_config.controller_url + '/controller/rest/applications/' + app_config.app + '/metrics' + query_prams
-    logger.debug('url: ' + url)    
+    query_prams = {
+        'output': 'json',
+        'metric-path': metric_path_root
+    }
+    url = app_config.controller_url + '/controller/rest/applications/' + app_config.app + '/metrics'
+    logger.debug('url: ' + url)
+    response = None
     try:
-        response = requests.get(url, auth=(app_config.get_full_user_name(), app_config.user_pass))
+        session = requests.Session()
+        session.auth = (app_config.get_full_user_name(), app_config.user_pass)
+        if os.getenv('APPD_MA_SSL_ENABLED') == 'true':
+            session.verify = 'cert.pem'
+        response = session.get(url, params=query_prams)
         response.raise_for_status()
+        logger.debug('response: ' + str(response.json()))
     except HTTPError as err:
         if err.response.status_code == 400 and 'invalid application' in err.response.reason.lower():
             logger.debug('application \'%s\' doesn\'t exist', app_config.app)
             return False
-    logger.debug('response: ' + str(response.json()))
-    if len(response.json()) == 0:
+    if response and len(response.json()) == 0:
         return False   
     return True
     
+
 def upload_healthrules(healthrules_xml, overwrite):
     logger.info('uploading health rules to controller (overwrite=(' + str(app_config.overwrite) + '))')    
     url = app_config.controller_url + '/controller/healthrules/' + app_config.app
@@ -237,6 +258,7 @@ def upload_healthrules(healthrules_xml, overwrite):
     response = requests.post(url, auth=(app_config.get_full_user_name(), app_config.user_pass), files={'file':healthrules_xml})
     response.raise_for_status();
     logger.debug('response: ' + str(response.content))
+
 
 def upload_dashboard(dashboard_json, overwrite):
     logger.info('uploading dashboard to controller')
@@ -248,6 +270,7 @@ def upload_dashboard(dashboard_json, overwrite):
     response = requests.post(url, auth=(app_config.get_full_user_name(), app_config.user_pass), files={'file':dashboard_json})
     response.raise_for_status();
     logger.debug('response status code: ' + str(response.status_code))
+
 
 def publish_dashboard_and_hrs(overwrite):
     logger.info('publishing pcf dashboards and hrs')
@@ -267,9 +290,11 @@ def publish_dashboard_and_hrs(overwrite):
     upload_healthrules(healthrules, overwrite)
     logger.info('done publishing pcf dashboards and hrs')
     
+
 def start_flask():
     logger.info('starting service on port ' + str(app_config.service_port))
     service.run(debug=True, port=app_config.service_port)
+
 
 @service.route('/pcf-dash/publish', methods=['POST'])
 def publish():
@@ -287,6 +312,7 @@ def publish():
     publish_dashboard_and_hrs(overwrite)
     return 'done'
 
+
 def start_app_commandline():
     app_config.commandline = True
     parse_args()
@@ -299,13 +325,15 @@ def start_app_commandline():
             return
         publish_dashboard_and_hrs(app_config.overwrite)
 
+
 def start_app_pcf():
     parse_env()
     gunicorn_logger = logging.getLogger('gunicorn.error')
     if gunicorn_logger is not None:
         service.logger.handlers = gunicorn_logger.handlers
         service.logger.setLevel(gunicorn_logger.level)
-        
+
+
 if __name__ == '__main__':
     start_app_commandline()
 else:
