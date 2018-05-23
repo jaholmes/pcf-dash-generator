@@ -337,7 +337,7 @@ def publish_dashboard_and_hrs(retry=False, overwrite=False):
     healthrules = generate_healthrules(pcf_services, system_metrics_parent_folder,
                                        AppConfig.app, AppConfig.tier, AppConfig.tier_id)
     if AppConfig.commandline and not AppConfig.start_service:
-        logger.info('writing generated dashboard and hrs to file system')
+        logger.debug('writing generated dashboard and hrs to file system')
         with open(pcf_dash_generated_file, 'w', encoding='utf-8') as myfile:
             myfile.write(dashboard)
         with open(pcf_hrs_generated_file, 'w', encoding='utf-8') as myfile:
