@@ -357,10 +357,10 @@ def start_flask():
 @service.route('/pcf-dash/publish', methods=['POST'])
 def publish():
     logger.info('request received: publish')
-    overwrite = request.args.get('overwrite') is not None and request.args.get('overwrite').lower() == 'true'
-    retry = request.args.get('retry') is not None and request.args.get('retry').lower() == 'true'
+    overwrite = request.args.get('overwrite') and request.args.get('overwrite').lower() == 'true'
+    retry = request.args.get('retry') and request.args.get('retry').lower() == 'true'
     try:
-        publish_dashboard_and_hrs(retry, overwrite)
+        publish_dashboard_and_hrs(retry, overwrite, overwrite)
     except MetricPathNotFound as e:
         logger.error(str(e))
         return Response(str(e), 404)
