@@ -9,6 +9,7 @@ import logging
 from logging.config import fileConfig
 from requests.exceptions import HTTPError
 from tenacity import *
+import time
 
 pcf_dash_template_file = 'templates/pcf_dashboard_template_v1.json'
 pcf_dash_generated_file = 'generated/pcf_dashboard_generated.json'
@@ -21,6 +22,7 @@ pcf_hrs_generated_file = 'generated/pcf_healthrules_generated.xml'
 dashboard_name = '${APPLICATION_NAME}-${TIER_NAME}-PCF KPI Dashboard'
 publish_max_retries = 10
 publish_max_retry_delay_seconds = 60
+delay_after_hr_upload_seconds = 30
 
 fileConfig('logging_config.ini')
 logger = logging.getLogger()
@@ -341,6 +343,8 @@ def publish_dashboard_and_hrs(retry=False, overwrite=False):
         with open(pcf_hrs_generated_file, 'w', encoding='utf-8') as myfile:
             myfile.write(healthrules)
     upload_healthrules(healthrules, overwrite)
+    logger.debug('sleeping %s seconds for health rules to be saved', str(delay_after_hr_upload_seconds))
+    time.sleep(delay_after_hr_upload_seconds)
     upload_dashboard(dashboard, overwrite)
     logger.info('done publishing pcf dashboards and hrs')
 
