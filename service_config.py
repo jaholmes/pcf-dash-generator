@@ -20,7 +20,7 @@ def upload_hr_dashboard():
     pcf_dash_generator.logger.info("Generating Dash Board using a separate thread")
     while True:
         try:
-            pcf_dash_generator.publish_dashboard_and_hrs(retry=True, hr_overwrite=False, dashboard_overwrite=True)
+            pcf_dash_generator.publish_dashboard_and_hrs(retry=True, hr_overwrite=False, dashboard_overwrite=False)
         except KeyError as kexc:
             pcf_dash_generator.logger.error('Key not found' + str(kexc))
 
