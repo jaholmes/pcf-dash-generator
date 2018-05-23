@@ -340,8 +340,8 @@ def publish_dashboard_and_hrs(retry=False, overwrite=False):
             myfile.write(dashboard)
         with open(pcf_hrs_generated_file, 'w', encoding='utf-8') as myfile:
             myfile.write(healthrules)
-    upload_dashboard(dashboard, overwrite)
     upload_healthrules(healthrules, overwrite)
+    upload_dashboard(dashboard, overwrite)
     logger.info('done publishing pcf dashboards and hrs')
 
 
