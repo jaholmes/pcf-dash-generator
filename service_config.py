@@ -17,9 +17,14 @@ def write_cert_file():
 
 def upload_hr_dashboard():
     import pcf_dash_generator
-    pcf_dash_generator.logger.info("Generating Dash Board using a seperate thread")
+    pcf_dash_generator.logger.info("Generating Dash Board using a separate thread")
     while True:
-        pcf_dash_generator.publish_dashboard_and_hrs(True)
+        try:
+            pcf_dash_generator.publish_dashboard_and_hrs(retry=True, hr_overwrite=False, dashboard_overwrite=True)
+        except KeyError as kexc:
+            pcf_dash_generator.logger.error('Key not found' + str(kexc))
+
+        pcf_dash_generator.logger.info("Dashboard will be refreshed in {} seconds".format(REFRESH_TIME_SECS))
         time.sleep(REFRESH_TIME_SECS)
         pcf_dash_generator.logger.debug("Refreshing Dashboard and Health rules")
 

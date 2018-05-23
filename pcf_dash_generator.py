@@ -326,7 +326,7 @@ def upload_dashboard(dashboard_json, overwrite):
     logger.debug('response status code: ' + str(response.status_code))
 
 
-def publish_dashboard_and_hrs(retry=False, overwrite=False):
+def publish_dashboard_and_hrs(retry=False, hr_overwrite=False, dashboard_overwrite=False):
     logger.info('publishing pcf dashboards and hrs')
     check_pcf_metric_path_exists(retry)
     system_metrics_parent_folder = get_system_metrics_parent_folder()
@@ -342,10 +342,10 @@ def publish_dashboard_and_hrs(retry=False, overwrite=False):
             myfile.write(dashboard)
         with open(pcf_hrs_generated_file, 'w', encoding='utf-8') as myfile:
             myfile.write(healthrules)
-    upload_healthrules(healthrules, overwrite)
+    upload_healthrules(healthrules, hr_overwrite)
     logger.debug('sleeping %s seconds for health rules to be saved', str(delay_after_hr_upload_seconds))
     time.sleep(delay_after_hr_upload_seconds)
-    upload_dashboard(dashboard, overwrite)
+    upload_dashboard(dashboard, dashboard_overwrite)
     logger.info('done publishing pcf dashboards and hrs')
 
 
