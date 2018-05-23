@@ -326,7 +326,7 @@ def upload_dashboard(dashboard_json, overwrite):
     logger.debug('response status code: ' + str(response.status_code))
 
 
-def publish_dashboard_and_hrs(retry=False, overwrite=False):
+def publish_dashboard_and_hrs(retry=False, hr_overwrite=False, dashboard_overwrite=False):
     logger.info('publishing pcf dashboards and hrs')
     check_pcf_metric_path_exists(retry)
     system_metrics_parent_folder = get_system_metrics_parent_folder()
@@ -337,15 +337,15 @@ def publish_dashboard_and_hrs(retry=False, overwrite=False):
     healthrules = generate_healthrules(pcf_services, system_metrics_parent_folder,
                                        AppConfig.app, AppConfig.tier, AppConfig.tier_id)
     if AppConfig.commandline and not AppConfig.start_service:
-        logger.info('writing generated dashboard and hrs to file system')
+        logger.debug('writing generated dashboard and hrs to file system')
         with open(pcf_dash_generated_file, 'w', encoding='utf-8') as myfile:
             myfile.write(dashboard)
         with open(pcf_hrs_generated_file, 'w', encoding='utf-8') as myfile:
             myfile.write(healthrules)
-    upload_healthrules(healthrules, overwrite)
+    upload_healthrules(healthrules, hr_overwrite)
     logger.debug('sleeping %s seconds for health rules to be saved', str(delay_after_hr_upload_seconds))
     time.sleep(delay_after_hr_upload_seconds)
-    upload_dashboard(dashboard, overwrite)
+    upload_dashboard(dashboard, dashboard_overwrite)
     logger.info('done publishing pcf dashboards and hrs')
 
 
@@ -357,10 +357,10 @@ def start_flask():
 @service.route('/pcf-dash/publish', methods=['POST'])
 def publish():
     logger.info('request received: publish')
-    overwrite = request.args.get('overwrite') is not None and request.args.get('overwrite').lower() == 'true'
-    retry = request.args.get('retry') is not None and request.args.get('retry').lower() == 'true'
+    overwrite = request.args.get('overwrite') and request.args.get('overwrite').lower() == 'true'
+    retry = request.args.get('retry') and request.args.get('retry').lower() == 'true'
     try:
-        publish_dashboard_and_hrs(retry, overwrite)
+        publish_dashboard_and_hrs(retry, overwrite, overwrite)
     except MetricPathNotFound as e:
         logger.error(str(e))
         return Response(str(e), 404)
