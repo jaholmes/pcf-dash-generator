@@ -1,9 +1,12 @@
 import os
+import time
 from multiprocessing import Process
 
 bind = "0.0.0.0:{port}".format(port=os.getenv('VCAP_APP_PORT', '5000'))
 workers = 2
 pythonpath = os.curdir
+
+REFRESH_TIME_SECS = 300
 
 
 def write_cert_file():
@@ -12,10 +15,18 @@ def write_cert_file():
         print(os.path.abspath("cert.pem"))
 
 
-def when_ready(server):
-    write_cert_file()
+def upload_hr_dashboard():
     import pcf_dash_generator
     pcf_dash_generator.logger.info("Generating Dash Board using a seperate thread")
-    bootstrap_worker = Process(target=pcf_dash_generator.publish_dashboard_and_hrs, args=(True,))
+    while True:
+        pcf_dash_generator.publish_dashboard_and_hrs(True)
+        time.sleep(REFRESH_TIME_SECS)
+        pcf_dash_generator.logger.debug("Refreshing Dashboard and Health rules")
+
+
+def when_ready(server):
+    import pcf_dash_generator
+    write_cert_file()
+    bootstrap_worker = Process(target=upload_hr_dashboard)
     bootstrap_worker.start()
-    pcf_dash_generator.logger.info("Finished.")
+    pcf_dash_generator.logger.info("Dashboard Ready!")
