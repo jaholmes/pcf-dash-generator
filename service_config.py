@@ -17,7 +17,7 @@ def write_cert_file():
 
 def upload_hr_dashboard():
     import pcf_dash_generator
-    pcf_dash_generator.logger.info("Generating Dash Board using a separate thread")
+    pcf_dash_generator.logger.info("Generating Dashboard using a separate thread")
     while True:
         try:
             pcf_dash_generator.publish_dashboard_and_hrs(retry=True, hr_overwrite=False, dashboard_overwrite=False)

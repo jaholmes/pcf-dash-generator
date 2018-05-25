@@ -10,6 +10,7 @@ from logging.config import fileConfig
 from requests.exceptions import HTTPError
 from tenacity import *
 import time
+from json.decoder import JSONDecodeError
 
 pcf_dash_template_file = 'templates/pcf_dashboard_template_v1.json'
 pcf_dash_generated_file = 'generated/pcf_dashboard_generated.json'
@@ -289,7 +290,12 @@ def pcf_metric_path_exists():
         if err.response.status_code == 400 and 'invalid application' in err.response.reason.lower():
             logger.debug('application \'%s\' doesn\'t exist', AppConfig.app)
             return False
-    if response is None or len(response.json()) == 0:
+    if response is None:
+        return False
+    try:
+        if len(response.json()) == 0:
+            return False
+    except JSONDecodeError:
         return False
     return True
 
