@@ -126,11 +126,15 @@ def get_system_metrics_parent_folder():
 
     resource_parent_folder = None
     for folder in folders:
-        # todo need to filter out other cf- matches like cf-redis, but wait for new version of tile
-        # to confirm this is necessary (bosh/resource metric location may change)
-        if re.match('cf-\w+', str(folder['name']), re.I) and 'redis' not in str(folder['name']):
+        if re.match('cf-\w+', str(folder['name']), re.I):
             logger.debug('name: ' + str(folder['name']))
-            resource_parent_folder = str(folder['name'])
+            test_url = AppConfig.controller_url + '/controller/rest/applications/' + AppConfig.app + '/metrics' + query_prams + '|' + str(folder['name']) + '|diego_cell'
+            logger.debug('test_url: ' + test_url)
+            test_response = requests.get(test_url, auth=(AppConfig.get_full_user_name(), AppConfig.user_pass))
+            response.raise_for_status();            
+            logger.debug('test_response: ' + str(test_response.json()))
+            if not len(test_response.json()) == 0:
+                resource_parent_folder = str(folder['name'])
     if resource_parent_folder is None:
         raise RuntimeError("unable to locate resource metrics parent folder using url: " + url)
     return resource_parent_folder
