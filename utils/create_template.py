@@ -4,12 +4,10 @@ import json
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-source_file", help='file to create template from', required=True)
-    parser.add_argument("-template_mappings", help='json file with strings to replace', required=True)    
-    parser.add_argument("-v", "--verbose", action='store_true', dest="verbose", default=False, help="print verbose output")
+    parser.add_argument("--source_file", help='file to create template from', required=True)
+    parser.add_argument("--template_mappings", help='json file with strings to replace', required=True)    
     args = parser.parse_args()
-    if args.verbose:
-        print(args)
+    print(args)
     return args
 
     
