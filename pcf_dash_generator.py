@@ -45,7 +45,8 @@ class AppConfig(object):
     app = None
     tier = None
     tier_id = None
-    overwrite = False
+    recreate_dashboard = False    
+    overwrite_hrs = False
     start_service = None
     port = None
     commandline = False
@@ -95,8 +96,9 @@ def parse_args():
     parser.add_argument('--start_service', help='start the rest API service', action='store_true', default=False)
     parser.add_argument('--service_port', help='override the default port 8080 for the service',
                         type=int, default=8080)
-    parser.add_argument("--overwrite", help='set to true to overwrite existing health rules and recreate dashboard'
-                                            ' on the target controller',
+    parser.add_argument("--recreate_dashboard", help='set to true to recreate dashboard on the target controller if one already exists',
+                        action='store_true', default=False)
+    parser.add_argument("--overwrite_hrs", help='set to true to overwrite existing health rules on the target controller',
                         action='store_true', default=False)
     args = parser.parse_args()
     logger.info('args: ' + str(args))
@@ -109,7 +111,8 @@ def parse_args():
     AppConfig.app = args.app
     AppConfig.tier = args.tier
     AppConfig.tier_id = args.tier_id
-    AppConfig.overwrite = args.overwrite
+    AppConfig.recreate_dashboard = args.recreate_dashboard
+    AppConfig.overwrite_hrs = args.overwrite_hrs    
     AppConfig.start_service = args.start_service
     AppConfig.service_port = args.service_port
 
@@ -181,6 +184,7 @@ def get_pcf_services(system_metrics_parent_folder):
     return pcf_services
 
 def get_template_keyvalues(pcf_services, system_metrics_parent_folder, app, tier, tier_id):
+    logger.info('getting template key/values')
     keyvalues = {
         'APPLICATION_NAME' : app,        
         'TIER_NAME' : tier,
@@ -297,10 +301,10 @@ def check_pcf_metric_path_exists(retry=False):
         raise MetricPathNotFound(msg)
 
 
-def upload_healthrules(healthrules_xml, overwrite):
-    logger.info('uploading health rules to controller (overwrite=(' + str(AppConfig.overwrite) + '))')
+def upload_healthrules(healthrules_xml, overwrite_hrs):
+    logger.info('uploading health rules to controller (overwrite_hrs=' + str(AppConfig.overwrite_hrs) + ')')
     url = AppConfig.controller_url + '/controller/healthrules/' + AppConfig.app
-    if overwrite:
+    if overwrite_hrs:
         url += "?overwrite=true"
     logger.debug('url: ' + url)
     response = requests.post(url, auth=(AppConfig.get_full_user_name(), AppConfig.user_pass),
@@ -309,10 +313,10 @@ def upload_healthrules(healthrules_xml, overwrite):
     logger.debug('response: ' + str(response.content))
 
 
-def upload_dashboard(dashboard_json, overwrite):
+def upload_dashboard(dashboard_json, recreate_dashboard):
     logger.info('uploading dashboard to controller')
-    if not overwrite and dashboard_already_exists():
-        logger.info('dashboard already exists on controller, skipping upload (overwrite=(' + str(overwrite) + '))')
+    if not recreate_dashboard and dashboard_already_exists():
+        logger.info('dashboard already exists on controller, will not recreate (recreate_dashboard=' + str(recreate_dashboard) + ')', )
         return
     url = AppConfig.controller_url + '/controller/CustomDashboardImportExportServlet'
     logger.debug('url: ' + url)
@@ -322,7 +326,7 @@ def upload_dashboard(dashboard_json, overwrite):
     logger.debug('response status code: ' + str(response.status_code))
 
 
-def publish_dashboard_and_hrs(retry=False, hr_overwrite=False, dashboard_overwrite=False):
+def publish_dashboard_and_hrs(retry=False, recreate_dashboard=False, overwrite_hrs=False):
     logger.info('publishing pcf dashboards and hrs')
     check_pcf_metric_path_exists(retry)
     system_metrics_parent_folder = get_system_metrics_parent_folder()
@@ -339,10 +343,10 @@ def publish_dashboard_and_hrs(retry=False, hr_overwrite=False, dashboard_overwri
             myfile.write(dashboard)
         with open(pcf_hrs_generated_file, 'w', encoding='utf-8') as myfile:
             myfile.write(healthrules)
-    upload_healthrules(healthrules, hr_overwrite)
+    upload_healthrules(healthrules, overwrite_hrs)
     logger.debug('sleeping %s seconds for health rules to be saved', str(DELAY_AFTER_HR_UPLOAD_SECONDS))
     time.sleep(DELAY_AFTER_HR_UPLOAD_SECONDS)
-    upload_dashboard(dashboard, dashboard_overwrite)
+    upload_dashboard(dashboard, recreate_dashboard)
     logger.info('done publishing pcf dashboards and hrs')
 
 
@@ -354,10 +358,11 @@ def start_flask():
 @service.route('/pcf-dash/publish', methods=['POST'])
 def publish():
     logger.info('request received: publish')
-    overwrite = request.args.get('overwrite') and request.args.get('overwrite').lower() == 'true'
+    overwrite_hrs = request.args.get('overwrite_hrs') and request.args.get('overwrite_hrs').lower() == 'true'
+    recreate_dashboard = request.args.get('recreate_dashboard') and request.args.get('recreate_dashboard').lower() == 'true'    
     retry = request.args.get('retry') and request.args.get('retry').lower() == 'true'
     try:
-        publish_dashboard_and_hrs(retry, overwrite, overwrite)
+        publish_dashboard_and_hrs(retry, recreate_dashboard, overwrite_hrs)
     except MetricPathNotFound as e:
         logger.error(str(e))
         return Response(str(e), 404)
@@ -370,6 +375,8 @@ def start_app_commandline():
     if AppConfig.start_service:
         logger.info('starting service')
         start_flask()
+    else:
+        publish_dashboard_and_hrs(retry=False, recreate_dashboard=AppConfig.recreate_dashboard, overwrite_hrs=AppConfig.overwrite_hrs)
 
 
 def start_app_pcf():
