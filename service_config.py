@@ -17,18 +17,16 @@ def write_cert_file():
 
 def upload_hr_dashboard():
     import pcf_dash_generator
-    pcf_dash_generator.logger.info("Generating dashboard using a separate thread")
+    pcf_dash_generator.logger.info("Generating Dashboard using a separate thread")
     while True:
         try:
             pcf_dash_generator.publish_dashboard_and_hrs(retry=True, recreate_dashboard=False, overwrite_hrs=False)
         except KeyError as kexc:
             pcf_dash_generator.logger.error('Key not found' + str(kexc))
-        except pcf_dash_generator.MetricPathNotFound:
-            pcf_dash_generator.logger.info('Metric path not found, will retry')
-
+            
         pcf_dash_generator.logger.info("Dashboard will be refreshed in {} seconds".format(REFRESH_TIME_SECS))
         time.sleep(REFRESH_TIME_SECS)
-        pcf_dash_generator.logger.debug("Refreshing dashboard and health rules")
+        pcf_dash_generator.logger.debug("Refreshing Dashboard and Health rules")
 
 
 def when_ready(server):
@@ -36,4 +34,4 @@ def when_ready(server):
     write_cert_file()
     bootstrap_worker = Process(target=upload_hr_dashboard)
     bootstrap_worker.start()
-    pcf_dash_generator.logger.info("Dashboard ready!")
+    pcf_dash_generator.logger.info("Dashboard Ready!")
