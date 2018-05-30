@@ -17,13 +17,15 @@ pcf_dash_generated_file = 'generated/pcf_dashboard_generated.json'
 pcf_hrs_template_file = 'templates/pcf_healthrules_template_v1.xml'
 pcf_hrs_generated_file = 'generated/pcf_healthrules_generated.xml'
 
-# dashboard_name should match name used in dashboard template;
+# DASHBOARD_NAME should match name used in dashboard template;
 # otherwise check for existing dashboard will fail -- dashboard_already_exists()
-
-dashboard_name = '${APPLICATION_NAME}-${TIER_NAME}-PCF KPI Dashboard'
-publish_max_retries = 10
-publish_max_retry_delay_seconds = 60
-delay_after_hr_upload_seconds = 30
+DASHBOARD_NAME = '${APPLICATION_NAME}-${TIER_NAME}-PCF KPI Dashboard'
+PUBLISH_MAX_RETRIES = 10
+PUBLISH_MAX_RETRY_DELAY_SECONDS = 60
+DELAY_AFTER_HR_UPLOAD_SECONDS = 30
+PCF_SERVICE_NAMES = ['clock_global', 'cloud_controller', 'cloud_controller_worker', 'consul_server', 'credhub', 
+                     'diego_brain', 'diego_cell', 'diego_database', 'doppler', 'loggregator_trafficcontroller', 
+                     'mysql', 'mysql_proxy', 'nats', 'router', 'syslog_adapter', 'syslog_scheduler', 'tcp_router', 'uaa'] 
 
 fileConfig('logging_config.ini')
 logger = logging.getLogger()
@@ -67,8 +69,8 @@ class AppConfig(object):
 def parse_env():
     controller_host = os.getenv('APPD_MA_HOST_NAME')
     controller_port = os.getenv('APPD_MA_PORT')
-    controller_ssl = os.getenv('APPD_MA_SSL_ENABLED')
-    AppConfig.controller_url = AppConfig.get_controller_url(controller_host, controller_port, controller_ssl)
+    controller_ssl_enabled = os.getenv('APPD_MA_SSL_ENABLED')
+    AppConfig.controller_url = AppConfig.get_controller_url(controller_host, controller_port, controller_ssl_enabled)
     logger.debug('controller url: ' + AppConfig.controller_url)
     AppConfig.account_name = os.getenv('APPD_MA_ACCOUNT_NAME', 'customer1')
     AppConfig.user_name = os.getenv('APPD_MA_USER_NAME')
@@ -80,16 +82,16 @@ def parse_env():
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--controller_host', help='the controller host', default=None)
-    parser.add_argument('--controller_port', help='the controller port', default=None)
-    parser.add_argument('--controller_ssl', help='True if ssl is enabled', default=False)
-    parser.add_argument('--account_name', help='the controller account name', default='customer1')
-    parser.add_argument('--user_name', help='the controller username', default=None)
-    parser.add_argument('--user_pass', help='the controller user password', default=None)
+    parser.add_argument('--controller_host', help='the controller host', required=True, default=None)
+    parser.add_argument('--controller_port', help='the controller port', required=True, default=None)
+    parser.add_argument('--controller_ssl_enabled', help='controller ssl is enabled', action='store_true', default=False)
+    parser.add_argument('--account_name', help='the controller account name', required=True, default=None)
+    parser.add_argument('--user_name', help='the controller username', required=True, default=None)
+    parser.add_argument('--user_pass', help='the controller user password', required=True, default=None)
     parser.add_argument('--app', help='the Appd app where PCF metrics are published by the PCF tile and where dashboard'
-                                      ' and health rules will be generated', default=None)
-    parser.add_argument('--tier', help='the Appd tier where PCF metrics are published by the PCF tile', default=None)
-    parser.add_argument('--tier_id', help='the tier component id used in metric path as COMPONENT:<id>', default=None)
+                                      ' and health rules will be generated', required=True, default=None)
+    parser.add_argument('--tier', help='the Appd tier where PCF metrics are published by the PCF tile', required=True, default=None)
+    parser.add_argument('--tier_id', help='the tier component id used in metric path as COMPONENT:<id>', required=True, default=None)
     parser.add_argument('--start_service', help='start the rest API service', action='store_true', default=False)
     parser.add_argument('--service_port', help='override the default port 8080 for the service',
                         type=int, default=8080)
@@ -99,7 +101,7 @@ def parse_args():
     args = parser.parse_args()
     logger.info('args: ' + str(args))
     AppConfig.controller_url = AppConfig.get_controller_url(args.controller_host, args.controller_port,
-                                                            args.controller_ssl)
+                                                            args.controller_ssl_enabled)
     logger.debug('controller url: ' + AppConfig.controller_url)
     AppConfig.account_name = args.account_name
     AppConfig.user_name = args.user_name
@@ -178,61 +180,45 @@ def get_pcf_services(system_metrics_parent_folder):
             pcf_services[service_name][i] = {'guid' : guid}
     return pcf_services
 
+def get_template_keyvalues(pcf_services, system_metrics_parent_folder, app, tier, tier_id):
+    keyvalues = {
+        'APPLICATION_NAME' : app,        
+        'TIER_NAME' : tier,
+        'TIER_ID' : tier_id,                
+        'SYSTEM_METRICS_PARENT_FOLDER' : system_metrics_parent_folder
+    }
+    for pcf_service_name in PCF_SERVICE_NAMES:
+        service_vms = pcf_services[pcf_service_name]
+        logger.debug('service vms: ' + str(service_vms))        
+        i = 0
+        for service_vm in service_vms:
+            logger.debug('service vm guid: ' + service_vm['guid'])
+            keyvalues[pcf_service_name.upper() + '_' + str(i) + '_GUID'] = service_vm['guid']
+            i += 1  
+    logger.debug('keyvalues: ' + str(keyvalues))
+    return keyvalues
 
-def generate_dashboard(pcf_services, system_metrics_parent_folder, app, tier):
+def generate_dashboard(template_keyvalues):
     logger.info('generating dashboard from template')
     with open(pcf_dash_template_file, 'r', encoding='utf-8') as myfile:
         dash_template=myfile.read()
     dash_template = Template(dash_template)
-    generated = dash_template.substitute(APPLICATION_NAME=app,
-                                 TIER_NAME=tier,
-                                 SERVER_NAME='SERVER25',
-                                 SYSTEM_METRICS_PARENT_FOLDER=system_metrics_parent_folder,
-                                 DIEGO_CELL_0_GUID=pcf_services['diego_cell'][0]['guid'],
-                                 DIEGO_CELL_1_GUID=pcf_services['diego_cell'][1]['guid'],
-                                 DIEGO_CELL_2_GUID=pcf_services['diego_cell'][2]['guid'],
-                                 ROUTER_0_GUID=pcf_services['router'][0]['guid'],
-                                 UAA_0_GUID=pcf_services['uaa'][0]['guid'])
-
+    generated = dash_template.substitute(template_keyvalues)
+    #logger.debug('generated: ' + generated)        
     return generated
 
 
-def generate_healthrules(pcf_services, system_metrics_parent_folder, app, tier, tier_id):
+def generate_healthrules(template_keyvalues):
     logger.info('generating health rules from template')
     with open(pcf_hrs_template_file, 'r', encoding='utf-8') as myfile:
         hr_template=myfile.read()
     hr_template = Template(hr_template)
-    generated = hr_template.substitute(TIER_NAME=tier,
-                                       TIER_ID=tier_id,
-                                       SERVER_NAME='SERVER25',
-                                       SYSTEM_METRICS_PARENT_FOLDER=system_metrics_parent_folder,
-                                       CLOCK_GLOBAL_0_GUID=pcf_services['clock_global'][0]['guid'],
-                                       CLOUD_CONTROLLER_0_GUID=pcf_services['cloud_controller'][0]['guid'],
-                                       CLOUD_CONTROLLER_WORKER_0_GUID=
-                                       pcf_services['cloud_controller_worker'][0]['guid'],
-                                       CONSUL_SERVER_0_GUID=pcf_services['consul_server'][0]['guid'],
-                                       CREDHUB_0_GUID=pcf_services['credhub'][0]['guid'],
-                                       DIEGO_BRAIN_0_GUID=pcf_services['diego_brain'][0]['guid'],
-                                       DIEGO_CELL_0_GUID=pcf_services['diego_cell'][0]['guid'],
-                                       DIEGO_CELL_1_GUID=pcf_services['diego_cell'][1]['guid'],
-                                       DIEGO_CELL_2_GUID=pcf_services['diego_cell'][2]['guid'],
-                                       DIEGO_DATABASE_0_GUID=pcf_services['diego_database'][0]['guid'],
-                                       DOPPLER_0_GUID=pcf_services['doppler'][0]['guid'],
-                                       LOGGREGATOR_TRAFFICCONTROLLER_0_GUID=
-                                       pcf_services['loggregator_trafficcontroller'][0]['guid'],
-                                       MYSQL_0_GUID=pcf_services['mysql'][0]['guid'],
-                                       MYSQL_PROXY_0_GUID=pcf_services['mysql_proxy'][0]['guid'],
-                                       NATS_0_GUID=pcf_services['nats'][0]['guid'],
-                                       ROUTER_0_GUID=pcf_services['router'][0]['guid'],
-                                       SYSLOG_ADAPTER_0_GUID=pcf_services['syslog_adapter'][0]['guid'],
-                                       SYSLOG_SCHEDULER_0_GUID=pcf_services['syslog_scheduler'][0]['guid'],
-                                       TCP_ROUTER_0_GUID=pcf_services['tcp_router'][0]['guid'],
-                                       UAA_0_GUID=pcf_services['uaa'][0]['guid'])
+    generated = hr_template.substitute(template_keyvalues)
     return generated
 
 
 def dashboard_already_exists():
-    dash_name_template = Template(dashboard_name)
+    dash_name_template = Template(DASHBOARD_NAME)
     dash_name = dash_name_template.substitute(APPLICATION_NAME=AppConfig.app, TIER_NAME=AppConfig.tier)
     logger.info('checking if dashboard already exists on controller with name: ' + dash_name)
     session = requests.Session()
@@ -260,8 +246,8 @@ def is_false(value):
     return value is False
 
 
-@retry(wait=wait_exponential(max=publish_max_retry_delay_seconds),
-       stop=stop_after_attempt(publish_max_retries),
+@retry(wait=wait_exponential(max=PUBLISH_MAX_RETRY_DELAY_SECONDS),
+       stop=stop_after_attempt(PUBLISH_MAX_RETRIES),
        retry=retry_if_result(is_false),
        retry_error_callback=return_last_value)
 def pcf_metric_path_exists_with_retry():
@@ -343,9 +329,10 @@ def publish_dashboard_and_hrs(retry=False, hr_overwrite=False, dashboard_overwri
     logger.debug('system_metrics_parent_folder: ' + str(system_metrics_parent_folder))
     pcf_services = get_pcf_services(system_metrics_parent_folder)
     logger.debug('pcf_services: ' + str(pcf_services))
-    dashboard = generate_dashboard(pcf_services, system_metrics_parent_folder, AppConfig.app, AppConfig.tier)
-    healthrules = generate_healthrules(pcf_services, system_metrics_parent_folder,
-                                       AppConfig.app, AppConfig.tier, AppConfig.tier_id)
+    template_keyvalues = get_template_keyvalues(pcf_services, system_metrics_parent_folder, 
+                                                AppConfig.app, AppConfig.tier, AppConfig.tier_id)    
+    dashboard = generate_dashboard(template_keyvalues)
+    healthrules = generate_healthrules(template_keyvalues)
     if AppConfig.commandline and not AppConfig.start_service:
         logger.debug('writing generated dashboard and hrs to file system')
         with open(pcf_dash_generated_file, 'w', encoding='utf-8') as myfile:
@@ -353,8 +340,8 @@ def publish_dashboard_and_hrs(retry=False, hr_overwrite=False, dashboard_overwri
         with open(pcf_hrs_generated_file, 'w', encoding='utf-8') as myfile:
             myfile.write(healthrules)
     upload_healthrules(healthrules, hr_overwrite)
-    logger.debug('sleeping %s seconds for health rules to be saved', str(delay_after_hr_upload_seconds))
-    time.sleep(delay_after_hr_upload_seconds)
+    logger.debug('sleeping %s seconds for health rules to be saved', str(DELAY_AFTER_HR_UPLOAD_SECONDS))
+    time.sleep(DELAY_AFTER_HR_UPLOAD_SECONDS)
     upload_dashboard(dashboard, dashboard_overwrite)
     logger.info('done publishing pcf dashboards and hrs')
 
