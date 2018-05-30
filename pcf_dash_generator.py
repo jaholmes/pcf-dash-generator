@@ -79,6 +79,9 @@ def parse_env():
     AppConfig.app = os.getenv('APPD_NOZZLE_APP_NAME')
     AppConfig.tier = os.getenv('APPD_NOZZLE_TIER_NAME')
     AppConfig.tier_id = os.getenv('APPD_NOZZLE_TIER_ID')
+    AppConfig.recreate_dashboard = os.getenv('APPD_MA_RECREATE_DASHBOARD')
+    AppConfig.overwrite_hrs = os.getenv('APPD_MA_OVERWRITE_HRS')
+    
 
 
 def parse_args():
@@ -183,6 +186,7 @@ def get_pcf_services(system_metrics_parent_folder):
             pcf_services[service_name][i] = {'guid' : guid}
     return pcf_services
 
+
 def get_template_keyvalues(pcf_services, system_metrics_parent_folder, app, tier, tier_id):
     logger.info('getting template key/values')
     keyvalues = {
@@ -194,13 +198,12 @@ def get_template_keyvalues(pcf_services, system_metrics_parent_folder, app, tier
     for pcf_service_name in PCF_SERVICE_NAMES:
         service_vms = pcf_services[pcf_service_name]
         logger.debug('service vms: ' + str(service_vms))        
-        i = 0
-        for service_vm in service_vms:
+        for i, service_vm in enumerate(service_vms):
             logger.debug('service vm guid: ' + service_vm['guid'])
             keyvalues[pcf_service_name.upper() + '_' + str(i) + '_GUID'] = service_vm['guid']
-            i += 1  
     logger.debug('keyvalues: ' + str(keyvalues))
     return keyvalues
+
 
 def generate_dashboard(template_keyvalues):
     logger.info('generating dashboard from template')
