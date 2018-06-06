@@ -1,17 +1,20 @@
 # pcf-dash-generator
-- The Appd Tile will publish a platform dashboard and set of HRs to monitor key performance and scaling indicators for the PCF foundation that the tile is deployed to
-- The HRs and dashboard leverage the metrics that the Appd tile collects from the Loggregator Firehose and publishes to the Appd application configured in the tile
-- The key performance and scaling indicators monitored by the published dashboard and HRs are based on what Pivotal recommends and documents here:
-https://docs.pivotal.io/pivotalcf/2-1/monitoring/index.html
-- Screenhost of dashboards and HRs (todo)
-- The HRs and dashboard are deployed to the controller and app entered in the tile.
-- The user and password fields in the tile are used to create the HRs and dashboard via the REST API, and will require permissions to create dashboards and HRs in the target controller and app
- 
+## Overview
+The PCF Dashboard Generator is a python 3 application that generates a platform dashboard and set of health rules for PCF foundations that have installed the Appd Tile 2.x (ref).
+The generated dashboard and health rules leverage the custom metrics published by the Appd Tile to the AppD controller and application configured in the Appd Tile. These metrics are pulled from the PCF Loggregator Firehose and represent the core performance and scaling KPIs as documented by Pivotal here
 
-- The dashboard will have the name <app name>-<tile name>-PCF KPI Dashboard
-- The HRs will have the tier name prepended to the name. The HRs are created in the target application entered in the tile
-- The dashboards and HRs are published via a PCF application that is deployed by the tile
-- When the tile is deployed, the application will create the dashboard and HRs only if they don't already exist.
-- The dashboards and HRs are based on a template that assumes a minimal PCF foundation where there is a single instance of each PCF service (controller, controller_worker, etc) and 3 instances of the diego_cell service.
-- List services
-- If the PCF foundation has a different number of instances for any service, the deployed dashboard and HRs can be modified to include the additional instances. For more information see the <github repo>. If there's a specific number of instances that are used repeatedly to deploy new PCF foundations, it's also possible to update the default platform dashboard and HR templates to support this.
+## Dashboard
+The dashboard is separated into 3 sections. The top section reflects the core capacity measurements and alerts for Diego Cell, Router and UAA services. The middle section lists performance alerts and a graph of Router throughput. The bottom section shows VM resource and health alerts for the core PCF services.
+
+## Usage
+The PCF Dashboard Generator can be run as a command line script or an application with a REST API. The Appd Tile installs the PCF Dashboard Generator as a PCF application, which is configured to automatically generate the dashboards and health rules at startup as part of the tile deployment.
+
+## Dashboard and Health Rules Naming
+The generated dashboard is named according to application and tier name configured in the Appd Tile, i.e. ${applicationName}-${tierName}-PCF KPI Dashboard.
+The generated health rules are prefixed with the tier name configured in the tile, so that Appd Tiles deployed to multiple foundations can report to the same Appd application. An example is ${tierName}-Diego Cell Memory Capacity.
+
+## Overwrite Behavior
+The PCF Dashboard Generator will write the dashboard and health rules to the controller and application configured in the Appd Tile only if they do not exist. If you wish to recreate the dashboard  and overwrite the existing health rules you can rename or delete the existing ones, or if you're using the command line option, supply the appropriate overwrite/recreate flag.
+
+## Adjusting Diego Cell Capacity Widgets and Health Rules
+The dashboard and health rules are based on a template that assumes 3 Diego Cell VMs. If your foundation has a different number of Diego Cells, it will be necessary to edit the dashboard widgets and health rules related to Diego Cell capacity to properly reflect the actual capacity.
