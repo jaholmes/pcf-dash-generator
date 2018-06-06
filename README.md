@@ -4,7 +4,8 @@ The PCF Dashboard Generator is a python 3 application that generates a platform 
 The generated dashboard and health rules leverage the custom metrics published by the Appd Tile to the AppD controller and application configured in the Appd Tile. These metrics are pulled from the PCF Loggregator Firehose and represent the core performance and scaling KPIs as documented by Pivotal here
 
 ## Dashboard
-The dashboard is separated into 3 sections. The top section reflects the core capacity measurements and alerts for Diego Cell, Router and UAA services. The middle section lists performance alerts and a graph of Router throughput. The bottom section shows VM resource and health alerts for the core PCF services.
+![PCF KPI Dashboard](docs/PCF%20KPI%20Dashboard%20v2.png)
+The dashboard is separated into 3 sections. The top section reflects the core capacity measurements and alerts for the Diego Cell, Router and UAA services. The middle section lists performance alerts and a graph of Router throughput. The bottom section shows VM resource and health alerts for the core PCF services.
 
 ## Usage
 The PCF Dashboard Generator can be run as a command line script or an application with a REST API. The Appd Tile installs the PCF Dashboard Generator as a PCF application, which is configured to automatically generate the dashboards and health rules at startup as part of the tile deployment.
