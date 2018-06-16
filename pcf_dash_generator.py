@@ -245,6 +245,14 @@ def dashboard_already_exists():
     return False
 
 
+def log_backoff(message):
+    logger.info("retryring fetching metrics exponentially")
+    logger.info(message)
+
+def log_giveup(message):
+    logger.error("metric path not found giving up")
+
+
 def retry_if_result_false(result):
     """Return True if we should retry (in this case when result is False), False otherwise"""
     return result == False
@@ -252,8 +260,10 @@ def retry_if_result_false(result):
 
 @backoff.on_predicate(backoff.expo,
                     lambda result: result == False,
-                    interval=PUBLISH_MAX_RETRY_DELAY_SECONDS,
-                    max_value=PUBLISH_MAX_RETRIES)
+                    factor=PUBLISH_MAX_RETRY_DELAY_SECONDS,
+                    max_tries=PUBLISH_MAX_RETRIES,
+                    on_backoff=log_backoff,
+                    on_giveup=log_giveup)
 def pcf_metric_path_exists_with_retry():
     return pcf_metric_path_exists()
 

@@ -5,13 +5,13 @@ applications:
   buildpack: python_buildpack
   command: gunicorn --preload --config service_config.py --log-level debug pcf_dash_generator:service
   env:
-    APPD_MA_HOST_NAME: 
+    APPD_MA_HOST_NAME: master-saas-controller.e2e.appd-test.com 
     APPD_MA_PORT: 8090
-    APPD_NOZZLE_TIER_NAME: 
-    APPD_MA_USER_NAME: 
-    APPD_MA_USER_PASS: 
+    APPD_NOZZLE_TIER_NAME: tier1 
+    APPD_MA_USER_NAME:  user1
+    APPD_MA_USER_PASS: account
     APPD_MA_ACCOUNT_ACCESS_KEY: 
-    APPD_MA_SSL_ENABLED: 
+    APPD_MA_SSL_ENABLED: false
     APPD_MA_ACCOUNT_NAME: customer1
-    APPD_NOZZLE_TIER_ID: 
-    APPD_NOZZLE_APP_NAME:
+    APPD_NOZZLE_TIER_ID: 12
+    APPD_NOZZLE_APP_NAME: app1
