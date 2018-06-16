@@ -7,8 +7,8 @@ import requests
 import re
 import logging
 from logging.config import fileConfig
+from retrying import retry
 from requests.exceptions import HTTPError
-from tenacity import *
 import time
 from json.decoder import JSONDecodeError
 
@@ -245,18 +245,14 @@ def dashboard_already_exists():
     return False
 
 
-def return_last_value(last_attempt):
-    return last_attempt.result()
+def retry_if_result_false(result):
+    """Return True if we should retry (in this case when result is False), False otherwise"""
+    return result == False
 
 
-def is_false(value):
-    return value is False
-
-
-@retry(wait=wait_exponential(max=PUBLISH_MAX_RETRY_DELAY_SECONDS),
-       stop=stop_after_attempt(PUBLISH_MAX_RETRIES),
-       retry=retry_if_result(is_false),
-       retry_error_callback=return_last_value)
+@retry(wait_exponential_multiplier=PUBLISH_MAX_RETRY_DELAY_SECONDS,
+       stop_max_attempt_number=PUBLISH_MAX_RETRIES,
+       retry=retry_if_result_false)
 def pcf_metric_path_exists_with_retry():
     return pcf_metric_path_exists()
 
