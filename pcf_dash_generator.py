@@ -3,11 +3,11 @@ from flask import Flask, request, Response
 from string import Template
 import os
 import argparse
+import backoff
 import requests
 import re
 import logging
 from logging.config import fileConfig
-from retrying import retry
 from requests.exceptions import HTTPError
 import time
 from json.decoder import JSONDecodeError
@@ -250,9 +250,10 @@ def retry_if_result_false(result):
     return result == False
 
 
-@retry(wait_exponential_multiplier=PUBLISH_MAX_RETRY_DELAY_SECONDS,
-       stop_max_attempt_number=PUBLISH_MAX_RETRIES,
-       retry=retry_if_result_false)
+@backoff.on_predicate(backoff.expo,
+                    lambda result: result == False,
+                    interval=PUBLISH_MAX_RETRY_DELAY_SECONDS,
+                    max_value=PUBLISH_MAX_RETRIES)
 def pcf_metric_path_exists_with_retry():
     return pcf_metric_path_exists()
 
